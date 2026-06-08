@@ -106,7 +106,7 @@ def require_credentials(values: dict[str, str]) -> tuple[str, str, str]:
         raise ApiError(
             "Missing credentials: "
             + ", ".join(missing)
-            + ". Run: python3 scripts/setup_console_credentials.py"
+            + ". Run from the element-console-api skill directory: python3 scripts/setup_console_credentials.py"
         )
     return base_url.rstrip("/"), client_id, client_secret
 

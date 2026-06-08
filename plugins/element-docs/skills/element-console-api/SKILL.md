@@ -11,15 +11,20 @@ The bundled reference was generated from the local HTML Docusaurus archive for E
 
 ## Bundled Resource Paths
 
-Treat the directory containing this `SKILL.md` as `SKILL_DIR`. Resolve every bundled script and reference file relative to `SKILL_DIR`, not relative to the user's current project.
+Treat the exact directory containing this loaded `SKILL.md` file as `SKILL_DIR`. In marketplace/plugin installs it may be nested under a path like `.../plugins/element-docs/skills/element-console-api` or a Codex plugin cache; do not assume the user's current workspace or the plugin root contains `scripts/`.
+
+If the loaded skill path is relative or unclear, locate the skill directory before running helpers:
+
+```bash
+SKILL_DIR="$(dirname "$(find . "$HOME/.codex/plugins/cache" -path '*/skills/element-console-api/SKILL.md' -print -quit 2>/dev/null)")"
+test -n "$SKILL_DIR" && test -f "$SKILL_DIR/scripts/search_console_api.py"
+```
 
 Before running bundled scripts, change into the skill directory:
 
 ```bash
 cd "$SKILL_DIR"
 ```
-
-If `SKILL_DIR` is not already set, derive it from the loaded skill path shown in Codex context, for example the directory that contains `skills/element-console-api/SKILL.md`.
 
 ## Required Workflow
 
