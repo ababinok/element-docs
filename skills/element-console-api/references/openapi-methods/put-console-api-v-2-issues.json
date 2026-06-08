@@ -1,0 +1,1117 @@
+{
+  "slug": "put-console-api-v-2-issues",
+  "api": {
+    "tags": [
+      "Групповая разработка. Задачи"
+    ],
+    "description": "Создать новую задачу или обновить существующую по фильтру поиска",
+    "operationId": "put-console-api-v2-issues",
+    "parameters": [
+      {
+        "name": "number, title, external-url",
+        "in": "query",
+        "description": "Параметры поиска ссылки на задачу. Для предварительной проверки уже созданной, по естественным идентификаторам.",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "project-id, project-name, project-prefix",
+        "in": "query",
+        "description": "Параметры поиска ссылки на проект. Для уточнения фильтра поиска ссылки на задачу и заполнения соответствующего реквизита. Допускается указание в параметрах и/или теле запроса (найти задачу в одном проекте и записать в другой).",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "space-id",
+        "in": "query",
+        "description": "Идентификатор пространства. При работе в облаке. Для уточнения фильтра поиска ссылок по значениям естественных идентификаторов. Распространяется на значения в параметрах запроса и атрибутах тела.",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "include",
+        "in": "query",
+        "description": "Имена атрибутов задачи, которые будут выгружены в ответе, в дополнение к основным. Через \",\". По умолчанию не выгружаются.",
+        "required": false,
+        "example": "?include=branches,description",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "project",
+            "description",
+            "branches",
+            "applications",
+            "attachments",
+            "labels",
+            "reviewers"
+          ]
+        }
+      },
+      {
+        "name": "exclude",
+        "in": "query",
+        "description": "Аналогично \"include\", только указываются имена атрибутов, которые будут пропущены. Позволяет исключать любые атрибуты, в т.ч. основные. Совместим с \"include\".",
+        "required": false,
+        "example": "?exclude=version-stamp,number&include=branches,description",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "имя-атрибута"
+          ]
+        }
+      },
+      {
+        "name": "node",
+        "in": "query",
+        "description": "Идентификатор внешней системы (узел-отправитель). При использовании настройки регистрации изменений для задач и нескольких систем-отправителей (узлов). Чтобы свои изменения не выгружались, при получении задач с параметром time-stamp.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "maxLength": 36,
+          "default": 1
+        }
+      }
+    ],
+    "requestBody": {
+      "description": "Данные задачи. Если атрибут не передаётся, то заполняется значением по умолчанию, в соответствии с внутренней схемой (как при интерактивной работе).",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "description": "Задача",
+            "required": [
+              "title"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Идентификатор задачи",
+                "readOnly": true,
+                "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+              },
+              "number": {
+                "description": "Номер задачи. Обеспечивает контроль уникальности в пределах проекта. Если не указан при загрузке, то заполняется внутренним кодом.",
+                "type": "string",
+                "maxLength": 30,
+                "default": "Внутренний код (ПрефиксПроекта-N)",
+                "example": "CRM-1"
+              },
+              "title": {
+                "type": "string",
+                "description": "Название задачи",
+                "maxLength": 150,
+                "example": "Разработать API для задач"
+              },
+              "project": {
+                "description": "Проект",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор ссылки",
+                        "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Название",
+                        "example": "Управление заказами"
+                      },
+                      "prefix": {
+                        "type": "string",
+                        "description": "Префикс",
+                        "example": "CRM"
+                      }
+                    },
+                    "title": "ProjectRefDto"
+                  },
+                  {
+                    "writeOnly": true,
+                    "description": "id или name ссылки (только для записи)",
+                    "type": "string",
+                    "title": "IdOrNameString"
+                  }
+                ]
+              },
+              "external-url": {
+                "type": "string",
+                "description": "Внешний идентификатор задачи для гиперссылки. Полный URL или часть (UUID) для подстановки в шаблон.",
+                "example": "http://1Cbase/issue/CRM-1"
+              },
+              "status": {
+                "type": "string",
+                "description": "Статус задачи",
+                "enum": [
+                  "open",
+                  "in-progress",
+                  "under-review",
+                  "done",
+                  "closed"
+                ],
+                "default": "open",
+                "example": "in-progress"
+              },
+              "description": {
+                "type": "string",
+                "description": "Описание задачи. В формате HTML. При превышении 500 символов в свойствах задачи не выгружается (пустое значение и description-is-too-large: true). Требуется отдельная подгрузка (из .../issues/{key}/description), аналогично вложениям.",
+                "example": "<body><p>Текст описания</p></body>"
+              },
+              "description-is-too-large": {
+                "type": "boolean",
+                "description": "Признак превышения объема description.",
+                "default": false,
+                "readOnly": true
+              },
+              "created": {
+                "description": "Дата создания. \nДля выгрузки: можно изменить формат в настройках групповой разработки для проекта. По умолчанию — в универсальном формате с часовым поясом.\nДля загрузки: принимаются основные форматы по ISO-8601. Если в значении не указан часовой пояс, он берется из настроек групповой разработки проекта.\n",
+                "type": "string",
+                "format": "instant, dateTime",
+                "example": "2025-01-02T10:11:12.345Z | 2025-01-02T10:11:12Z | 2025-01-02 10:11:12+03:00 | 2025-01-02 10:11:12",
+                "default": "текущая дата"
+              },
+              "completed": {
+                "description": "Дата завершения (выполнения, закрытия, удаления). Формат аналогичен \"created\".",
+                "type": "string",
+                "format": "instant, dateTime",
+                "example": "2025-01-02T10:11:12.345Z",
+                "default": "текущая дата (при записи соответствующего состояния)"
+              },
+              "updated": {
+                "description": "Дата последнего обновления из внешней системы. Формат аналогичен \"created\".",
+                "type": "string",
+                "format": "instant, dateTime",
+                "example": "2025-01-02T10:11:12.345Z",
+                "default": "текущая дата"
+              },
+              "imported": {
+                "description": "Дата загрузки задачи из внешней системы. Для созданных локально — пустое значение. Формат аналогичен \"created\".",
+                "type": "string",
+                "format": "instant, dateTime",
+                "readOnly": true,
+                "example": "2025-01-02T10:11:12.345Z",
+                "default": "текущая дата"
+              },
+              "author": {
+                "description": "Создатель задачи",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор ссылки",
+                        "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Имя",
+                        "example": "Масков И.Р."
+                      }
+                    },
+                    "title": "UserRefDto"
+                  },
+                  {
+                    "writeOnly": true,
+                    "description": "id или name ссылки (только для записи)",
+                    "type": "string",
+                    "title": "IdOrNameString"
+                  }
+                ]
+              },
+              "assignee": {
+                "description": "Исполнитель задачи",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор ссылки",
+                        "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Имя",
+                        "example": "Масков И.Р."
+                      }
+                    },
+                    "title": "UserRefDto"
+                  },
+                  {
+                    "writeOnly": true,
+                    "description": "id или name ссылки (только для записи)",
+                    "type": "string",
+                    "title": "IdOrNameString"
+                  }
+                ]
+              },
+              "release": {
+                "description": "Релиз, в который включена задача",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор ссылки",
+                        "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Наименование"
+                      }
+                    },
+                    "title": "CatalogRefDto"
+                  },
+                  {
+                    "writeOnly": true,
+                    "description": "id или name ссылки (только для записи)",
+                    "type": "string",
+                    "title": "IdOrNameString"
+                  }
+                ]
+              },
+              "target-branch": {
+                "description": "Релизная или основная ветка для заливки результата",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор ссылки",
+                        "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Имя",
+                        "example": "issue/CRM-1"
+                      },
+                      "application": {
+                        "type": "object",
+                        "description": "Приложение",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Название",
+                            "example": "CRM-dev"
+                          },
+                          "url": {
+                            "type": "string",
+                            "description": "URL",
+                            "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                          }
+                        },
+                        "title": "ApplicationRefDto"
+                      }
+                    },
+                    "title": "BranchRefDto"
+                  },
+                  {
+                    "writeOnly": true,
+                    "description": "id или name ссылки (только для записи)",
+                    "type": "string",
+                    "title": "IdOrNameString"
+                  }
+                ]
+              },
+              "branch-usage": {
+                "description": "Режим выбора ветки разработки",
+                "type": "string",
+                "enum": [
+                  "create-new-branch",
+                  "use-main-branch",
+                  "choose-branch"
+                ],
+                "default": "create-new-branch или use-main-branch (в зависимости от настроек проекта)",
+                "example": "create-new-branch"
+              },
+              "branches": {
+                "description": "Ветки",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Идентификатор ссылки",
+                      "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Имя",
+                      "example": "issue/CRM-1"
+                    },
+                    "application": {
+                      "type": "object",
+                      "description": "Приложение",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Идентификатор ссылки",
+                          "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Название",
+                          "example": "CRM-dev"
+                        },
+                        "url": {
+                          "type": "string",
+                          "description": "URL",
+                          "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                        }
+                      },
+                      "title": "ApplicationRefDto"
+                    }
+                  },
+                  "title": "BranchRefDto"
+                }
+              },
+              "attachments": {
+                "description": "Вложения (прикрепленные файлы). В свойствах задачи выгружается только описание. Само тело файла необходимо передавать отдельно (.../issues/{key}/attachment). Вместо тела файла можно заполнить URL ресурса для гиперссылки из формы задачи.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Имя файла",
+                      "required": true,
+                      "example": "Скриншот.jpg"
+                    },
+                    "size": {
+                      "type": "string",
+                      "description": "Строковое представление размера",
+                      "example": "100,5 КБ"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "URL адрес для открытия по гиперссылке",
+                      "example": "http://1Cbase/files/0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                    }
+                  }
+                }
+              },
+              "labels": {
+                "description": "Метки (тэги)",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "Блок Контрагенты"
+                }
+              },
+              "reviewers": {
+                "description": "Проверяющие задачи",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Идентификатор ссылки",
+                          "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Имя",
+                          "example": "Масков И.Р."
+                        }
+                      },
+                      "title": "UserRefDto"
+                    },
+                    "state": {
+                      "type": "string",
+                      "description": "Результат проверки",
+                      "enum": [
+                        "not-approved",
+                        "approved",
+                        "needs-work"
+                      ],
+                      "default": "not-approved",
+                      "example": "approved"
+                    }
+                  }
+                }
+              },
+              "deletion-mark": {
+                "description": "Пометка удаления",
+                "type": "boolean",
+                "default": false,
+                "example": false
+              },
+              "version-stamp": {
+                "description": "Идентификатор версии объекта. Если заполнено в теле запроса изменения объекта - выполняется оптимистическая блокировка.",
+                "type": "string",
+                "format": "uuid",
+                "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+              },
+              "time-stamp": {
+                "description": "Отметка времени изменения объекта (при использовании настройки регистрации изменений для задач). Если заполнено в теле запроса изменения объекта - выполняется оптимистическая блокировка.",
+                "type": "string",
+                "format": "instant",
+                "default": "текущая дата",
+                "example": "2025-01-02T10:11:12.345Z"
+              },
+              "write-parameters": {
+                "writeOnly": true,
+                "description": "Дополнительные действия после записи задачи. Аналогичны командам пользовательского интерфейса. Доступны при создании, изменении, удалении. Выполняются после фиксации транзакции записи объекта. Для вызова необходимо установить значение true для соответствующих атрибутов или передать имена атрибутов в массиве.",
+                "type": "object",
+                "properties": {
+                  "create-single-branch": {
+                    "description": "Создать ветку разработки, если ещё нет. С учетом настройки \"branch-usage\".",
+                    "type": "boolean"
+                  },
+                  "set-branch-application": {
+                    "allOf": [
+                      {
+                        "description": "Установить приложение разработки. Если ветка ещё не создана - выполняется \"create-single-branch\"."
+                      },
+                      {
+                        "type": "object",
+                        "description": "Приложение",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Название",
+                            "example": "CRM-dev"
+                          },
+                          "url": {
+                            "type": "string",
+                            "description": "URL",
+                            "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                          }
+                        },
+                        "title": "ApplicationRefDto"
+                      }
+                    ]
+                  },
+                  "merge-branches": {
+                    "description": "Включает ветки разработки задачи в основную или релизную ветку, если заполнена.",
+                    "type": "boolean"
+                  },
+                  "update-target-branch-application": {
+                    "description": "Обновить приложение целевой ветки (после merge-branches).",
+                    "type": "boolean"
+                  },
+                  "cherry-pick-branch-to": {
+                    "allOf": [
+                      {
+                        "description": "Скопировать изменения из основной ветки разработки задачи в указанную ветку."
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Имя",
+                            "example": "issue/CRM-1"
+                          },
+                          "application": {
+                            "type": "object",
+                            "description": "Приложение",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Идентификатор ссылки",
+                                "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Название",
+                                "example": "CRM-dev"
+                              },
+                              "url": {
+                                "type": "string",
+                                "description": "URL",
+                                "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                              }
+                            },
+                            "title": "ApplicationRefDto"
+                          }
+                        },
+                        "title": "BranchRefDto"
+                      }
+                    ]
+                  },
+                  "delete-branches": {
+                    "description": "Удалить ветки разработки задачи.",
+                    "type": "boolean"
+                  },
+                  "delete-branches-applications": {
+                    "description": "Удалить приложения веток разработки задачи.",
+                    "type": "boolean"
+                  },
+                  "clear-branches": {
+                    "description": "Очистить ссылки на ветки в задаче (без удаления самих веток и их содержимого).",
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "title": "IssueDto"
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Найдена уже созданная задача, по указанным параметрам поиска, и её данные успешно обновлены. Можно изменить атрибуты ответа через параметры include/exclude.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Атрибуты задачи",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Идентификатор",
+                  "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                },
+                "number": {
+                  "description": "Номер",
+                  "type": "string",
+                  "maxLength": 30,
+                  "example": "CRM-1"
+                },
+                "version-stamp": {
+                  "description": "Идентификатор версии объекта",
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                }
+              },
+              "title": "IssueResultDto"
+            }
+          }
+        }
+      },
+      "201": {
+        "description": "Создана новая задача. Можно изменить атрибуты ответа через параметры include/exclude.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Атрибуты задачи",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Идентификатор",
+                  "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                },
+                "number": {
+                  "description": "Номер",
+                  "type": "string",
+                  "maxLength": 30,
+                  "example": "CRM-1"
+                },
+                "version-stamp": {
+                  "description": "Идентификатор версии объекта",
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                }
+              },
+              "title": "IssueResultDto"
+            }
+          }
+        }
+      },
+      "205": {
+        "description": "Найдена уже созданная задача, по указанным параметрам поиска, и её данные соответствуют переданным (версия объекта не изменилась). Можно изменить атрибуты ответа через параметры include/exclude.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Атрибуты задачи",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Идентификатор",
+                  "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                },
+                "number": {
+                  "description": "Номер",
+                  "type": "string",
+                  "maxLength": 30,
+                  "example": "CRM-1"
+                },
+                "version-stamp": {
+                  "description": "Идентификатор версии объекта",
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                }
+              },
+              "title": "IssueResultDto"
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "* 3 — Некорректное значение параметра\n* 9 — Запрос не может быть обработан в текущем состоянии системы\n* 11 — Значение выходит за пределы допустимого диапазона\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "16 — Отсутствие аутентификации",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "7 — Отсутствие авторизации",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "5 — Неизвестный идентификатор",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "409": {
+        "description": "Данные уже существуют",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "13 — Ошибка на стороне сервера",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      }
+    },
+    "method": "put",
+    "path": "/console/api/v2/issues",
+    "servers": [
+      {
+        "url": "https://1cmycloud.com"
+      },
+      {
+        "url": "http://localhost:9090"
+      }
+    ],
+    "security": [
+      {
+        "bearerAuth": []
+      }
+    ],
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "jsonRequestBodyExample": {
+      "number": "CRM-1",
+      "title": "Разработать API для задач",
+      "project": {
+        "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+        "name": "Управление заказами",
+        "prefix": "CRM"
+      },
+      "external-url": "http://1Cbase/issue/CRM-1",
+      "status": "in-progress",
+      "description": "<body><p>Текст описания</p></body>",
+      "created": "2025-01-02T10:11:12.345Z | 2025-01-02T10:11:12Z | 2025-01-02 10:11:12+03:00 | 2025-01-02 10:11:12",
+      "completed": "2025-01-02T10:11:12.345Z",
+      "updated": "2025-01-02T10:11:12.345Z",
+      "author": {
+        "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+        "name": "Масков И.Р."
+      },
+      "assignee": {
+        "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+        "name": "Масков И.Р."
+      },
+      "release": {
+        "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+        "name": "string"
+      },
+      "target-branch": {
+        "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+        "name": "issue/CRM-1",
+        "application": {
+          "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+          "name": "CRM-dev",
+          "url": "http://127.0.0.1:9090/applications/CRM-dev"
+        }
+      },
+      "branch-usage": "create-new-branch",
+      "branches": [
+        {
+          "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+          "name": "issue/CRM-1",
+          "application": {
+            "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+            "name": "CRM-dev",
+            "url": "http://127.0.0.1:9090/applications/CRM-dev"
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "Скриншот.jpg",
+          "size": "100,5 КБ",
+          "url": "http://1Cbase/files/0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+        }
+      ],
+      "labels": [
+        "Блок Контрагенты"
+      ],
+      "reviewers": [
+        {
+          "user": {
+            "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+            "name": "Масков И.Р."
+          },
+          "state": "approved"
+        }
+      ],
+      "deletion-mark": false,
+      "version-stamp": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+      "time-stamp": "2025-01-02T10:11:12.345Z",
+      "write-parameters": {
+        "create-single-branch": true,
+        "set-branch-application": {
+          "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+          "name": "CRM-dev",
+          "url": "http://127.0.0.1:9090/applications/CRM-dev"
+        },
+        "merge-branches": true,
+        "update-target-branch-application": true,
+        "cherry-pick-branch-to": {
+          "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+          "name": "issue/CRM-1",
+          "application": {
+            "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+            "name": "CRM-dev",
+            "url": "http://127.0.0.1:9090/applications/CRM-dev"
+          }
+        },
+        "delete-branches": true,
+        "delete-branches-applications": true,
+        "clear-branches": true
+      }
+    },
+    "info": {
+      "version": "2.0",
+      "title": "Команды API",
+      "description": "Здесь содержится справочная информация по командам API панели управления\n\n## Авторизация и аутентификация для доступа к API панели управления\n\nКоманды API панели управления доступны только авторизованным пользователям [панели управления](../topics/control-panel.mdx) (администраторам и разработчикам приложений) и недоступны пользователям приложений вне зависимости от их роли. Неавторизованным пользователям требуется пройти процедуру авторизации. Далее, после авторизации в системе, для доступа к API используется аутентификация с помощью токена доступа. Для получения токена доступа выполните действия, описанные ниже.\n\nВ профиле пользователя, в разделе [**Ключи доступа**](../topics/get-user-key.mdx#получение-ключа-доступа-к-панели-управления), получите идентификатор и секрет клиента. Они будут использоваться далее при создании запроса.\n\nПолучите токен с помощью запроса вида:\n\n```text\nPOST /console/sys/token\nContent-Type: application/x-www-form-urlencoded\nAuthorization: Basic <ClientId:ClientSecret в кодировке Base64>\ngrant_type=CLIENT_CREDENTIALS\n```\n\nНапример, для HTTP-запроса:\n\n```text\nPOST /console/sys/token HTTP/1.1\nHost: localhost:9090\nContent-Type: application/x-www-form-urlencoded\nAuthorization: Basic dlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az06dTNUUFlTMVplRV9TVFJJeFQ4VDh6R3NQYnVRcXFJbDlRbUhDdlJUOXd5cz0=\nContent-Length: 29\n\ngrant_type=client_credentials\n```\n\nТак будет выглядеть ответ в формате JSON с токеном и информацией о нем:\n\n```json\n{\n    \"id_token\": \"eyJhbGciOiJSUzUxMiJ9.eyJpc3MiOiI3R0xnMmV0WkZzOG4wOXg1N1pyamlieTdRSEE4c25LLVl4OXJ2eFVoMnVnPSIsInN1YiI6IntcclxuICBcInVzZXItaWRcIiA6IFwiMjVkMjc1N2QtZWQ2Yi00OGFlLTlhYmYtYTU2M2QwMDA1MmFlXCIsXHJcbiAgXCJ1c2VyLWxpc3QtaWRcIiA6IFwiNDExYzVjYTAtOWFkMy00Y2RiLTgzZmUtMDZhMGYyMGNiNWIyXCIsXHJcbiAgXCJ1c2VyLXByZXNlbnRhdGlvblwiIDogXCJhZG1pblwiLFxyXG4gIFwiYXV0aC1pZGVudGl0eVwiIDoge1xyXG4gICAgXCJuYW1lXCIgOiBcInZRQkZtOVpDY1ZmYVdmT2Z2UE51bmtaZ3BvY3BJQTF4Zk1ubG5pcDZkdWs9XCIsXHJcbiAgICBcImRvbWFpblwiIDogXCJ1c2VyX3Rva2Vuc1wiXHJcbiAgfVxyXG59IiwiYXVkIjoidlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az0iLCJpYXQiOjE3MTA0MjI3NzMsImV4cCI6MTcxMDQyNjM3MywiYXRfaGFzaCI6IkFjY2Vzc1Rva2VuIGhhc2ggKG5vdCBpbXBsZW1lbnRlZCkifQ.NqLg2JfHuwcHVfjg4ePJGmIhKDDX5wEfduuO5maJoFmI3YGBk4oBbfC6iukKLY1CPUcsiLS0suU-2vaNvfBQt4ePE4l57uED1j7UKVj5ih2NHDuaHBBYDZQjXWC-0FyArC3jHcE7MjLAOqkymWIn0xtHOjLNNct1XdXfHoeZfBU\",\n    \"token_type\": \"Bearer\",\n    \"access_token\": \"Not implemented\"\n}\n```\n\nДалее, полученный токен будет использоваться для получения доступа к API. Тип авторизации: `Bearer` (`Bearer Token`).\n\nТокен действителен в течение часа. Таким образом, можно сделать сразу несколько вызовов (возможно разных команд API), используя уже полученный токен, а не получая его заново.\n\nЕсли токен устарел, то при вызове API вернется ответ с кодом 401. Это значит, что нужно снова запросить токен аутентификации.\n\n## Пример\n\nРассмотрим пример, в котором используем токен, чтобы [получить список приложений](get-console-api-v-2-applications.api.mdx) в панели управления.\n\nВыполните запрос с методом GET по адресу [http://localhost:9090/console/api/v2/applications](http://localhost:9090/console/api/v2/applications). При необходимости скопируйте и вставьте полученный ранее токен, а также указанный выше тип авторизации.\n\nТаким образом, ваш HTTP-запрос будет выглядеть так:\n\n```text\nGET /console/api/v2/applications HTTP/1.1\nHost: localhost:9090\nAuthorization: Bearer eyJhbGciOiJSUzUxMiJ9.eyJpc3MiOiI3R0xnMmV0WkZzOG4wOXg1N1pyamlieTdRSEE4c25LLVl4OXJ2eFVoMnVnPSIsInN1YiI6IntcclxuICBcInVzZXItaWRcIiA6IFwiMjVkMjc1N2QtZWQ2Yi00OGFlLTlhYmYtYTU2M2QwMDA1MmFlXCIsXHJcbiAgXCJ1c2VyLWxpc3QtaWRcIiA6IFwiNDExYzVjYTAtOWFkMy00Y2RiLTgzZmUtMDZhMGYyMGNiNWIyXCIsXHJcbiAgXCJ1c2VyLXByZXNlbnRhdGlvblwiIDogXCJhZG1pblwiLFxyXG4gIFwiYXV0aC1pZGVudGl0eVwiIDoge1xyXG4gICAgXCJuYW1lXCIgOiBcInZRQkZtOVpDY1ZmYVdmT2Z2UE51bmtaZ3BvY3BJQTF4Zk1ubG5pcDZkdWs9XCIsXHJcbiAgICBcImRvbWFpblwiIDogXCJ1c2VyX3Rva2Vuc1wiXHJcbiAgfVxyXG59IiwiYXVkIjoidlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az0iLCJpYXQiOjE3MTA0Mzg1NjIsImV4cCI6MTcxMDQ0MjE2MiwiYXRfaGFzaCI6IkFjY2Vzc1Rva2VuIGhhc2ggKG5vdCBpbXBsZW1lbnRlZCkifQ.VQOJf59w8wQejc1cUBJWh5DDS8P6KDcbihbANEGkzcu_gDOkau4FOwu2YIBB8ddNfdsxnEivANqr1R26hgL_RcKn28jezAYQ6gy3IyM2TMsPW5APixD4Q6n4YJkWCYGLR8gvJ_xvQUepX7LtGjAs9sE5eTJ150jSgGBbCRZHjBY\n```\n\nОтвет будет выглядеть следующим образом:\n\n```json\n[\n    {\n        \"display-name\": \"DemoCRM-dev\",\n        \"user-lists\": [\n            \"dbc195ed-3b80-4717-85d4-91dc60f406c5\",\n            \"411c5ca0-9ad3-4cdb-83fe-06a0f20cb5b2\"\n        ],\n        \"current-task\": null,\n        \"description\": \"\",\n        \"project\": {\n            \"id\": \"1eeb5447-c4f8-635e-b776-199d8903fded\"\n        },\n        \"endpoint\": null,\n        \"source\": {\n            \"project-version-id\": \"1eeb5447-c51f-6466-b776-199d8903fded\",\n            \"project-name\": \"DemoCRM\",\n            \"type\": \"image\",\n            \"image-id\": \"1eeb5447-c4f8-635e-b776-199d8903fded\",\n            \"project-version\": \"1.0\"\n        },\n        \"error\": null,\n        \"uri\": \"http://127.0.0.1:9090/applications/DemoCRM-dev\",\n        \"space-id\": \"1eeb5437-b8d7-655d-b776-199d8903fded\",\n        \"date-created\": \"2024-01-17T14:27:04.383Z\",\n        \"technology-version\": \"5.0.1-20240117.33032-636\",\n        \"name\": \"DemoCRM-dev\",\n        \"default-user-list\": \"dbc195ed-3b80-4717-85d4-91dc60f406c5\",\n        \"development-mode\": true,\n        \"debugging\": true,\n        \"autostarting-scheduled-jobs\": true,\n        \"id\": \"1eeb5447-c5bb-6867-b776-199d8903fded\",\n        \"autostarting-esb\": false,\n        \"status\": \"Running\"\n    }\n]\n```\n\nКак видно из примера выше, полученный ранее токен был успешно использован для аутентификации пользователя и получения доступа к API панели управления.\n"
+    },
+    "postman": {
+      "name": "Создать или обновить задачу",
+      "description": {
+        "content": "Создать новую задачу или обновить существующую по фильтру поиска",
+        "type": "text/plain"
+      },
+      "url": {
+        "path": [
+          "console",
+          "api",
+          "v2",
+          "issues"
+        ],
+        "host": [
+          "{{baseUrl}}"
+        ],
+        "query": [
+          {
+            "disabled": false,
+            "description": {
+              "content": "Параметры поиска ссылки на задачу. Для предварительной проверки уже созданной, по естественным идентификаторам.",
+              "type": "text/plain"
+            },
+            "key": "number, title, external-url",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Параметры поиска ссылки на проект. Для уточнения фильтра поиска ссылки на задачу и заполнения соответствующего реквизита. Допускается указание в параметрах и/или теле запроса (найти задачу в одном проекте и записать в другой).",
+              "type": "text/plain"
+            },
+            "key": "project-id, project-name, project-prefix",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Идентификатор пространства. При работе в облаке. Для уточнения фильтра поиска ссылок по значениям естественных идентификаторов. Распространяется на значения в параметрах запроса и атрибутах тела.",
+              "type": "text/plain"
+            },
+            "key": "space-id",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Имена атрибутов задачи, которые будут выгружены в ответе, в дополнение к основным. Через \",\". По умолчанию не выгружаются.",
+              "type": "text/plain"
+            },
+            "key": "include",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Аналогично \"include\", только указываются имена атрибутов, которые будут пропущены. Позволяет исключать любые атрибуты, в т.ч. основные. Совместим с \"include\".",
+              "type": "text/plain"
+            },
+            "key": "exclude",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Идентификатор внешней системы (узел-отправитель). При использовании настройки регистрации изменений для задач и нескольких систем-отправителей (узлов). Чтобы свои изменения не выгружались, при получении задач с параметром time-stamp.",
+              "type": "text/plain"
+            },
+            "key": "node",
+            "value": ""
+          }
+        ],
+        "variable": []
+      },
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "method": "PUT",
+      "body": {
+        "mode": "raw",
+        "raw": "",
+        "options": {
+          "raw": {
+            "language": "json"
+          }
+        }
+      }
+    }
+  }
+}

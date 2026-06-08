@@ -39,13 +39,15 @@ cd "$SKILL_DIR"
 python3 scripts/search_console_api.py --slug post-console-api-v-2-applications --full
 ```
 
+Use `--full` only after narrowing to one slug, unless the user explicitly needs several exact methods. The command reads only per-endpoint files from `references/openapi-methods/`; do not open or paste broad OpenAPI JSON into context.
+
 4. Read only the relevant reference files:
    - `references/auth.md` for authentication, token use, and environment variables.
    - `references/workflows.md` for common multi-step tasks.
    - `references/errors-and-safety.md` before destructive or state-changing calls.
    - `references/api-index.md` for a human-readable list of all methods by group.
    - `references/api-index.json` for compact structured summaries.
-   - `references/openapi-full.json` for exact decoded OpenAPI payloads.
+   - `references/openapi-methods/<slug>.json` only when `scripts/search_console_api.py --slug <slug> --full` is not enough.
    - `references/schemas-index.json` for schema page summaries.
 
 5. When producing code or curl examples, include the full method, path, required path/query parameters, request content type, and expected success/error responses from the selected OpenAPI entry.
@@ -150,3 +152,5 @@ After regeneration, inspect `references/coverage.json`. A complete 9.2 reference
 - `methodsLinkedToGroups`: 166
 - `methodsWithResponses`: 166
 - `methodsWithSecurity`: 166
+
+Exact endpoint payloads are sharded under `references/openapi-methods/`. Keep them sharded; do not restore a monolithic full OpenAPI reference file because it is easy to load into context accidentally.

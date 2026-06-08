@@ -227,6 +227,14 @@ def write_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=False) + "\n", encoding="utf-8")
 
 
+def write_method_refs(path: Path, api_by_slug: dict[str, dict[str, Any]]) -> None:
+    path.mkdir(parents=True, exist_ok=True)
+    for old in path.glob("*.json"):
+        old.unlink()
+    for slug, api in sorted(api_by_slug.items()):
+        write_json(path / f"{slug}.json", {"slug": slug, "api": api})
+
+
 def write_api_index_md(path: Path, groups: list[dict[str, Any]], summaries: dict[str, dict[str, Any]]) -> None:
     lines = [
         "# Console API Index",
@@ -280,6 +288,7 @@ def main() -> int:
         "sourceRoot": source_root.as_posix(),
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "consoleApiMethods": len(api_by_slug),
+        "methodReferenceFiles": len(api_by_slug),
         "groups": len(groups),
         "schemas": len(schemas),
         "methodsLinkedToGroups": len(group_lookup),
@@ -291,7 +300,7 @@ def main() -> int:
     }
 
     write_json(out / "api-index.json", {"coverage": coverage, "groups": groups, "methods": summaries})
-    write_json(out / "openapi-full.json", {"coverage": coverage, "methods": api_by_slug})
+    write_method_refs(out / "openapi-methods", api_by_slug)
     write_json(out / "schemas-index.json", {"coverage": coverage, "schemas": schemas})
     write_json(out / "coverage.json", coverage)
     write_api_index_md(out / "api-index.md", groups, summaries)

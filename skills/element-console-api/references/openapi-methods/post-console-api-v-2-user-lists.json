@@ -1,0 +1,595 @@
+{
+  "slug": "post-console-api-v-2-user-lists",
+  "api": {
+    "tags": [
+      "Пользователи"
+    ],
+    "description": "Создать список пользователей",
+    "operationId": "post-console-api-v2-user-lists",
+    "requestBody": {
+      "description": "В теле запроса space-id может иметь значение null. В этом случае список пользователей будет создан в пространстве, используемом по умолчанию",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "presentation": {
+                "type": "string",
+                "description": "Представление (название) списка пользователей"
+              },
+              "space-id": {
+                "type": "string",
+                "description": "Идентификатор пространства, к которому принадлежит список пользователей"
+              },
+              "include-personal-data-in-messages": {
+                "type": "boolean",
+                "description": "Флаг включения персональных данных в смс и email"
+              },
+              "self-registration": {
+                "type": "object",
+                "description": "Самостоятельная регистрация",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Флаг использования самостоятельной регистрации"
+                  },
+                  "phone-required": {
+                    "type": "boolean",
+                    "description": "Флаг необходимости иметь подтвержденный телефон (если у пользователя не подтвержден телефон, то он не сможет войти в приложение)"
+                  },
+                  "email-required": {
+                    "type": "boolean",
+                    "description": "Флаг необходимости иметь подтвержденный email (если у пользователя не подтвержден email, то он не сможет войти в приложение)"
+                  }
+                },
+                "x-examples": {
+                  "Example 1": {
+                    "enabled": true,
+                    "phone-required": true,
+                    "email-required": true
+                  }
+                },
+                "title": "SelfRegistration"
+              }
+            },
+            "x-examples": {
+              "Example 1": {
+                "presentation": "string",
+                "space-id": null,
+                "include-personal-data-in-messages": false,
+                "self-registration": {
+                  "email-required": false,
+                  "enabled": false,
+                  "phone-required": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Список пользователей успешно создан",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Список пользователей",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Идентификатор списка пользователей"
+                },
+                "space-id": {
+                  "type": "string",
+                  "description": "Идентификатор пространства, к которому принадлежит список пользователей"
+                },
+                "presentation": {
+                  "type": "string",
+                  "description": "Представление (название) списка пользователей"
+                },
+                "self-registration": {
+                  "type": "object",
+                  "description": "Самостоятельная регистрация",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean",
+                      "description": "Флаг использования самостоятельной регистрации"
+                    },
+                    "phone-required": {
+                      "type": "boolean",
+                      "description": "Флаг необходимости иметь подтвержденный телефон (если у пользователя не подтвержден телефон, то он не сможет войти в приложение)"
+                    },
+                    "email-required": {
+                      "type": "boolean",
+                      "description": "Флаг необходимости иметь подтвержденный email (если у пользователя не подтвержден email, то он не сможет войти в приложение)"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "enabled": true,
+                      "phone-required": true,
+                      "email-required": true
+                    }
+                  },
+                  "title": "SelfRegistration"
+                },
+                "confirmations": {
+                  "type": "array",
+                  "description": "Список способов подтверждения пользователей",
+                  "items": {
+                    "type": "object",
+                    "description": "Способ подтверждения пользователей",
+                    "properties": {
+                      "confirmation-type": {
+                        "type": "string",
+                        "description": "Тип способа подтверждения"
+                      },
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Флаг использования данного способа подтверждения"
+                      }
+                    },
+                    "x-examples": {
+                      "Example 1": {
+                        "confirmation-type": "SMS",
+                        "enabled": true
+                      }
+                    },
+                    "title": "Confirmation"
+                  }
+                },
+                "password-policy-enabled": {
+                  "type": "boolean",
+                  "description": "Флаг использования политики паролей"
+                },
+                "password-policy": {
+                  "type": "object",
+                  "description": "Политика паролей",
+                  "properties": {
+                    "min-length": {
+                      "type": "integer",
+                      "description": "Минимальное количество символов в пароле"
+                    },
+                    "max-length": {
+                      "type": "integer",
+                      "description": "Максимальное количество символов в пароле"
+                    },
+                    "must-contain-lower-case": {
+                      "type": "boolean",
+                      "description": "Флаг необходимости содержания символа в нижнем регистре"
+                    },
+                    "must-contain-upper-case": {
+                      "type": "boolean",
+                      "description": "Флаг необходимости содержания символа в верхнем регистре"
+                    },
+                    "must-contain-symbol": {
+                      "type": "string",
+                      "description": "Пароль должен содержать хотя бы один символ из приведенной строки (если строка пустая – правило не применяется)"
+                    },
+                    "allowed-alphabet": {
+                      "type": "string",
+                      "description": "Пароль должен содержать символы только из приведенной строки (если строка пустая – правило не учитывается"
+                    },
+                    "must-contain-digit": {
+                      "type": "boolean",
+                      "description": "Пароль должен содержать цифру"
+                    },
+                    "prohibit-previous-passwords": {
+                      "type": "integer",
+                      "description": "Пароль не должен совпадать с определенным количеством последних используемых паролей"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "min-length": 0,
+                      "max-length": 0,
+                      "must-contain-lower-case": true,
+                      "must-contain-upper-case": true,
+                      "must-contain-symbol": "string",
+                      "allowed-alphabet": "string",
+                      "must-contain-digit": true,
+                      "prohibit-previous-passwords": 0
+                    }
+                  },
+                  "title": "PasswordPolicy"
+                },
+                "smtp-gateways": {
+                  "type": "array",
+                  "description": "Массив почтовых шлюзов",
+                  "items": {
+                    "type": "object",
+                    "description": "Почтовый шлюз",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор шлюза"
+                      },
+                      "user": {
+                        "type": "string",
+                        "description": "Пользователь"
+                      },
+                      "password": {
+                        "type": "string",
+                        "description": "Пароль"
+                      },
+                      "use-ssl": {
+                        "type": "boolean",
+                        "description": "Флаг использования SSL"
+                      },
+                      "allow-start-tls": {
+                        "type": "boolean",
+                        "description": "Флаг использования STARTTLS"
+                      },
+                      "server": {
+                        "type": "string",
+                        "description": "Домен сервера"
+                      },
+                      "sender-address": {
+                        "type": "string",
+                        "description": "Адрес отправителя письма"
+                      },
+                      "sender-name": {
+                        "type": "string",
+                        "description": "Имя владельца адреса"
+                      },
+                      "port": {
+                        "type": "integer",
+                        "description": "Порт"
+                      }
+                    },
+                    "x-examples": {
+                      "Example 1": {
+                        "id": "string",
+                        "user": "string",
+                        "password": "string",
+                        "use-ssl": true,
+                        "allow-start-tls": true,
+                        "server": "string",
+                        "sender-address": "string",
+                        "sender-name": "string",
+                        "port": 0
+                      }
+                    },
+                    "title": "SmtpGateway"
+                  }
+                },
+                "account-services-settings": {
+                  "type": "array",
+                  "description": "Массив настроек сервисов учетных записей",
+                  "items": {
+                    "type": "object",
+                    "description": "Настройки сервисов внешних учетных записей",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Флаг использования сервиса внешних учетных записей"
+                      },
+                      "additional-settings": {
+                        "type": "object",
+                        "description": "Дополнительные настройки в виде \"ключ — значение\"",
+                        "properties": {
+                          "key": {
+                            "type": "string",
+                            "description": "Ключ"
+                          }
+                        }
+                      },
+                      "local-id": {
+                        "type": "string",
+                        "description": "Локальный идентификатор сервиса внешних учетных записей"
+                      },
+                      "account-service-id": {
+                        "type": "string",
+                        "description": "Идентификатор сервиса внешних учетных записей"
+                      },
+                      "account-service-type": {
+                        "type": "string",
+                        "description": "Тип сервиса внешних учетных записей (может иметь значения Local, Cas, ActiveDirectory, Esia, OAuth2)",
+                        "enum": [
+                          "Local",
+                          "Cas",
+                          "ActiveDirectory",
+                          "Esia",
+                          "OAuth2"
+                        ]
+                      },
+                      "create-user-on-auth": {
+                        "type": "boolean",
+                        "description": "Флаг создания нового пользователя в случае, когда была совершена успешная аутентификация"
+                      },
+                      "calculation-rules": {
+                        "type": "object",
+                        "description": "Правила вычисления свойств пользователя из ответа сервиса учетных записей",
+                        "properties": {
+                          "response-kind": {
+                            "type": "string",
+                            "description": "Формат ответа сервиса с информацией о пользователе (Json/Xml)"
+                          },
+                          "presentation-rule": {
+                            "type": "string",
+                            "description": "Правило вычисления представления пользователя (в формате JsonPath/XPath)"
+                          },
+                          "phone-rule": {
+                            "type": "string",
+                            "description": "Правило вычисления телефона пользователя (в формате JsonPath/XPath)"
+                          },
+                          "email-rule": {
+                            "type": "string",
+                            "description": "Правило вычисления почты пользователя (в формате JsonPath/XPath)"
+                          }
+                        }
+                      }
+                    },
+                    "x-examples": {
+                      "Example 1": [
+                        {
+                          "enabled": true,
+                          "additional-settings": {
+                            "key": "value"
+                          },
+                          "local-id": "string",
+                          "account-service-id": "string",
+                          "account-service-type": "string",
+                          "create-user-on-auth": true
+                        }
+                      ]
+                    },
+                    "title": "AccountServiceSettings"
+                  }
+                },
+                "sms-gateways": {
+                  "type": "array",
+                  "description": "Массив смс шлюзов",
+                  "items": {
+                    "type": "object",
+                    "description": "СМС-шлюз",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "description": "url сервиса для отправки СМС"
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор шлюза"
+                      },
+                      "application-id": {
+                        "type": "string",
+                        "description": "Идентификатор приложения"
+                      }
+                    },
+                    "x-examples": {
+                      "Example 1": {
+                        "url": "string",
+                        "id": "string",
+                        "application-id": "string"
+                      }
+                    },
+                    "title": "SmsGateway"
+                  }
+                },
+                "include-personal-data-in-messages": {
+                  "type": "boolean",
+                  "description": "Флаг включения персональных данных в смс и email"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "id": "string",
+                  "space-id": "string",
+                  "presentation": "string",
+                  "self-registration": {
+                    "email-required": true,
+                    "enabled": true,
+                    "phone-required": true
+                  },
+                  "password-policy-enabled": true,
+                  "password-policy": {
+                    "min-length": 0,
+                    "max-length": 0,
+                    "must-contain-lower-case": true,
+                    "must-contain-upper-case": true,
+                    "must-contain-symbol": "string",
+                    "allowed-alphabet": "string",
+                    "must-contain-digit": true,
+                    "prohibit-previous-passwords": 0
+                  },
+                  "smtp-gateways": [
+                    {
+                      "id": "string",
+                      "user": "string",
+                      "use-ssl": true,
+                      "allow-start-tls": true,
+                      "server": "string",
+                      "password": "string",
+                      "sender-address": "string",
+                      "sender-name": "string",
+                      "port": 0
+                    }
+                  ],
+                  "account-services-settings": [
+                    {
+                      "enabled": true,
+                      "additional-settings": {
+                        "cas-domain-name": "string",
+                        "cas-server-url": "string"
+                      },
+                      "local-id": "string",
+                      "account-service-id": null,
+                      "account-service-type": "string",
+                      "create-user-on-auth": true
+                    }
+                  ],
+                  "sms-gateways": [
+                    {
+                      "url": "string",
+                      "id": "string",
+                      "application-id": "string"
+                    }
+                  ],
+                  "include-personal-data-in-messages": true
+                }
+              },
+              "title": "UserList"
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "13 — Ошибка на стороне сервера",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "13 — Ошибка на стороне сервера",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      }
+    },
+    "method": "post",
+    "path": "/console/api/v2/user-lists",
+    "servers": [
+      {
+        "url": "https://1cmycloud.com"
+      },
+      {
+        "url": "http://localhost:9090"
+      }
+    ],
+    "security": [
+      {
+        "bearerAuth": []
+      }
+    ],
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "jsonRequestBodyExample": {
+      "presentation": "string",
+      "space-id": "string",
+      "include-personal-data-in-messages": true,
+      "self-registration": {
+        "enabled": true,
+        "phone-required": true,
+        "email-required": true
+      }
+    },
+    "info": {
+      "version": "2.0",
+      "title": "Команды API",
+      "description": "Здесь содержится справочная информация по командам API панели управления\n\n## Авторизация и аутентификация для доступа к API панели управления\n\nКоманды API панели управления доступны только авторизованным пользователям [панели управления](../topics/control-panel.mdx) (администраторам и разработчикам приложений) и недоступны пользователям приложений вне зависимости от их роли. Неавторизованным пользователям требуется пройти процедуру авторизации. Далее, после авторизации в системе, для доступа к API используется аутентификация с помощью токена доступа. Для получения токена доступа выполните действия, описанные ниже.\n\nВ профиле пользователя, в разделе [**Ключи доступа**](../topics/get-user-key.mdx#получение-ключа-доступа-к-панели-управления), получите идентификатор и секрет клиента. Они будут использоваться далее при создании запроса.\n\nПолучите токен с помощью запроса вида:\n\n```text\nPOST /console/sys/token\nContent-Type: application/x-www-form-urlencoded\nAuthorization: Basic <ClientId:ClientSecret в кодировке Base64>\ngrant_type=CLIENT_CREDENTIALS\n```\n\nНапример, для HTTP-запроса:\n\n```text\nPOST /console/sys/token HTTP/1.1\nHost: localhost:9090\nContent-Type: application/x-www-form-urlencoded\nAuthorization: Basic dlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az06dTNUUFlTMVplRV9TVFJJeFQ4VDh6R3NQYnVRcXFJbDlRbUhDdlJUOXd5cz0=\nContent-Length: 29\n\ngrant_type=client_credentials\n```\n\nТак будет выглядеть ответ в формате JSON с токеном и информацией о нем:\n\n```json\n{\n    \"id_token\": \"eyJhbGciOiJSUzUxMiJ9.eyJpc3MiOiI3R0xnMmV0WkZzOG4wOXg1N1pyamlieTdRSEE4c25LLVl4OXJ2eFVoMnVnPSIsInN1YiI6IntcclxuICBcInVzZXItaWRcIiA6IFwiMjVkMjc1N2QtZWQ2Yi00OGFlLTlhYmYtYTU2M2QwMDA1MmFlXCIsXHJcbiAgXCJ1c2VyLWxpc3QtaWRcIiA6IFwiNDExYzVjYTAtOWFkMy00Y2RiLTgzZmUtMDZhMGYyMGNiNWIyXCIsXHJcbiAgXCJ1c2VyLXByZXNlbnRhdGlvblwiIDogXCJhZG1pblwiLFxyXG4gIFwiYXV0aC1pZGVudGl0eVwiIDoge1xyXG4gICAgXCJuYW1lXCIgOiBcInZRQkZtOVpDY1ZmYVdmT2Z2UE51bmtaZ3BvY3BJQTF4Zk1ubG5pcDZkdWs9XCIsXHJcbiAgICBcImRvbWFpblwiIDogXCJ1c2VyX3Rva2Vuc1wiXHJcbiAgfVxyXG59IiwiYXVkIjoidlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az0iLCJpYXQiOjE3MTA0MjI3NzMsImV4cCI6MTcxMDQyNjM3MywiYXRfaGFzaCI6IkFjY2Vzc1Rva2VuIGhhc2ggKG5vdCBpbXBsZW1lbnRlZCkifQ.NqLg2JfHuwcHVfjg4ePJGmIhKDDX5wEfduuO5maJoFmI3YGBk4oBbfC6iukKLY1CPUcsiLS0suU-2vaNvfBQt4ePE4l57uED1j7UKVj5ih2NHDuaHBBYDZQjXWC-0FyArC3jHcE7MjLAOqkymWIn0xtHOjLNNct1XdXfHoeZfBU\",\n    \"token_type\": \"Bearer\",\n    \"access_token\": \"Not implemented\"\n}\n```\n\nДалее, полученный токен будет использоваться для получения доступа к API. Тип авторизации: `Bearer` (`Bearer Token`).\n\nТокен действителен в течение часа. Таким образом, можно сделать сразу несколько вызовов (возможно разных команд API), используя уже полученный токен, а не получая его заново.\n\nЕсли токен устарел, то при вызове API вернется ответ с кодом 401. Это значит, что нужно снова запросить токен аутентификации.\n\n## Пример\n\nРассмотрим пример, в котором используем токен, чтобы [получить список приложений](get-console-api-v-2-applications.api.mdx) в панели управления.\n\nВыполните запрос с методом GET по адресу [http://localhost:9090/console/api/v2/applications](http://localhost:9090/console/api/v2/applications). При необходимости скопируйте и вставьте полученный ранее токен, а также указанный выше тип авторизации.\n\nТаким образом, ваш HTTP-запрос будет выглядеть так:\n\n```text\nGET /console/api/v2/applications HTTP/1.1\nHost: localhost:9090\nAuthorization: Bearer eyJhbGciOiJSUzUxMiJ9.eyJpc3MiOiI3R0xnMmV0WkZzOG4wOXg1N1pyamlieTdRSEE4c25LLVl4OXJ2eFVoMnVnPSIsInN1YiI6IntcclxuICBcInVzZXItaWRcIiA6IFwiMjVkMjc1N2QtZWQ2Yi00OGFlLTlhYmYtYTU2M2QwMDA1MmFlXCIsXHJcbiAgXCJ1c2VyLWxpc3QtaWRcIiA6IFwiNDExYzVjYTAtOWFkMy00Y2RiLTgzZmUtMDZhMGYyMGNiNWIyXCIsXHJcbiAgXCJ1c2VyLXByZXNlbnRhdGlvblwiIDogXCJhZG1pblwiLFxyXG4gIFwiYXV0aC1pZGVudGl0eVwiIDoge1xyXG4gICAgXCJuYW1lXCIgOiBcInZRQkZtOVpDY1ZmYVdmT2Z2UE51bmtaZ3BvY3BJQTF4Zk1ubG5pcDZkdWs9XCIsXHJcbiAgICBcImRvbWFpblwiIDogXCJ1c2VyX3Rva2Vuc1wiXHJcbiAgfVxyXG59IiwiYXVkIjoidlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az0iLCJpYXQiOjE3MTA0Mzg1NjIsImV4cCI6MTcxMDQ0MjE2MiwiYXRfaGFzaCI6IkFjY2Vzc1Rva2VuIGhhc2ggKG5vdCBpbXBsZW1lbnRlZCkifQ.VQOJf59w8wQejc1cUBJWh5DDS8P6KDcbihbANEGkzcu_gDOkau4FOwu2YIBB8ddNfdsxnEivANqr1R26hgL_RcKn28jezAYQ6gy3IyM2TMsPW5APixD4Q6n4YJkWCYGLR8gvJ_xvQUepX7LtGjAs9sE5eTJ150jSgGBbCRZHjBY\n```\n\nОтвет будет выглядеть следующим образом:\n\n```json\n[\n    {\n        \"display-name\": \"DemoCRM-dev\",\n        \"user-lists\": [\n            \"dbc195ed-3b80-4717-85d4-91dc60f406c5\",\n            \"411c5ca0-9ad3-4cdb-83fe-06a0f20cb5b2\"\n        ],\n        \"current-task\": null,\n        \"description\": \"\",\n        \"project\": {\n            \"id\": \"1eeb5447-c4f8-635e-b776-199d8903fded\"\n        },\n        \"endpoint\": null,\n        \"source\": {\n            \"project-version-id\": \"1eeb5447-c51f-6466-b776-199d8903fded\",\n            \"project-name\": \"DemoCRM\",\n            \"type\": \"image\",\n            \"image-id\": \"1eeb5447-c4f8-635e-b776-199d8903fded\",\n            \"project-version\": \"1.0\"\n        },\n        \"error\": null,\n        \"uri\": \"http://127.0.0.1:9090/applications/DemoCRM-dev\",\n        \"space-id\": \"1eeb5437-b8d7-655d-b776-199d8903fded\",\n        \"date-created\": \"2024-01-17T14:27:04.383Z\",\n        \"technology-version\": \"5.0.1-20240117.33032-636\",\n        \"name\": \"DemoCRM-dev\",\n        \"default-user-list\": \"dbc195ed-3b80-4717-85d4-91dc60f406c5\",\n        \"development-mode\": true,\n        \"debugging\": true,\n        \"autostarting-scheduled-jobs\": true,\n        \"id\": \"1eeb5447-c5bb-6867-b776-199d8903fded\",\n        \"autostarting-esb\": false,\n        \"status\": \"Running\"\n    }\n]\n```\n\nКак видно из примера выше, полученный ранее токен был успешно использован для аутентификации пользователя и получения доступа к API панели управления.\n"
+    },
+    "postman": {
+      "name": "Создать список пользователей",
+      "description": {
+        "content": "Создать список пользователей",
+        "type": "text/plain"
+      },
+      "url": {
+        "path": [
+          "console",
+          "api",
+          "v2",
+          "user-lists"
+        ],
+        "host": [
+          "{{baseUrl}}"
+        ],
+        "query": [],
+        "variable": []
+      },
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "method": "POST",
+      "body": {
+        "mode": "raw",
+        "raw": "",
+        "options": {
+          "raw": {
+            "language": "json"
+          }
+        }
+      }
+    }
+  }
+}

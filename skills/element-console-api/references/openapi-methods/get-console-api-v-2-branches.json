@@ -1,0 +1,1102 @@
+{
+  "slug": "get-console-api-v-2-branches",
+  "api": {
+    "tags": [
+      "Групповая разработка. Ветки"
+    ],
+    "description": "Получить список веток. Метод поддерживает пагинацию. Для этого укажите хотя бы один из параметров \"page\" или \"result\".",
+    "operationId": "get-console-api-v2-branches",
+    "parameters": [
+      {
+        "name": "id, name",
+        "in": "query",
+        "description": "Значения для отбора веток, по соответствующим реквизитам. Допускается множество значений одного или нескольких параметров (по 'ИЛИ')",
+        "required": false,
+        "example": "?name=issue%2FCRM-1&name=issue%2FCRM-2",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "project-id, project-name, project-prefix",
+        "in": "query",
+        "description": "Идентификатор проекта для отбора веток, по соответствующим реквизитам. Допускается множество значений одного или нескольких параметров (по 'ИЛИ'). Совместим с параметрами отбора по реквизитам ветки (по 'И'). Если не указаны, выборка по всем доступным проектам.",
+        "required": false,
+        "example": "?project-prefix=CRM&name=issue%2FCRM-1&name=issue%2FCRM-2",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "space-id",
+        "in": "query",
+        "description": "Идентификатор пространства для отбора веток (при работе в облаке). Совместим с параметрами отбора по проекту и ветки (по 'И'). Если не указан, выборка по всем доступным пространствам.",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "last-id",
+        "in": "query",
+        "description": "Идентификатор последней ветки из предыдущей загруженной порции. Для выборки следующей порции, если в предыдущую все не поместились (код ответа 206).",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "include",
+        "in": "query",
+        "description": "Имена атрибутов ветки, которые будут выгружены, в дополнение к основным. Через \",\". Для сокращения объема выгрузки. По умолчанию выгружаются все. Если параметр указан с пустым значением то выгружаются все, кроме перечисленных в этом списке выбора.",
+        "required": false,
+        "example": "?include=project,application",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "project",
+            "branches",
+            "application",
+            "issue"
+          ]
+        }
+      },
+      {
+        "name": "exclude",
+        "in": "query",
+        "description": "Аналогично \"include\", только указываются имена атрибутов, которые будут пропущены. Позволяет исключать любые атрибуты, в т.ч. основные. Совместим с \"include\".",
+        "required": false,
+        "example": "?exclude=repository,version-stamp&include=project,application",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "имя-атрибута"
+          ]
+        }
+      },
+      {
+        "name": "page",
+        "in": "query",
+        "description": "Страница пагинированного ответа (нумерация начинается с 0).",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Целое число",
+          "default": 0,
+          "minimum": 0
+        }
+      },
+      {
+        "name": "size",
+        "in": "query",
+        "description": "Размер страницы пагинированного ответа.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "Целое число",
+          "default": 25,
+          "minimum": 1
+        }
+      },
+      {
+        "name": "result",
+        "in": "query",
+        "required": false,
+        "description": "Формат тела пагинированного ответа: массив данных или в структуре Page",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "array",
+            "page"
+          ],
+          "default": "array"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Данные веток",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "description": "Ветка",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Идентификатор ветки",
+                    "readOnly": true,
+                    "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Имя ветки",
+                    "example": "issue/CRM-1"
+                  },
+                  "kind": {
+                    "description": "Вид ветки",
+                    "type": "string",
+                    "enum": [
+                      "main",
+                      "release",
+                      "development"
+                    ],
+                    "default": "development"
+                  },
+                  "project": {
+                    "description": "Проект",
+                    "readOnly": true,
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Название",
+                            "example": "Управление заказами"
+                          },
+                          "prefix": {
+                            "type": "string",
+                            "description": "Префикс",
+                            "example": "CRM"
+                          }
+                        },
+                        "title": "ProjectRefDto"
+                      },
+                      {
+                        "writeOnly": true,
+                        "description": "id или name ссылки (только для записи)",
+                        "type": "string",
+                        "title": "IdOrNameString"
+                      }
+                    ]
+                  },
+                  "repository": {
+                    "type": "string",
+                    "description": "Репозиторий.\n* Для внешнего репозитория — URL.\n* Для внутреннего — \"internal\".\n",
+                    "example": "http://repositories/stash/scm/dt/crm.git",
+                    "readOnly": true
+                  },
+                  "source-branch": {
+                    "allOf": [
+                      {
+                        "description": "Ветка – источник для создания ветки. По умолчанию основная ветка проекта."
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Имя",
+                            "example": "issue/CRM-1"
+                          },
+                          "application": {
+                            "type": "object",
+                            "description": "Приложение",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Идентификатор ссылки",
+                                "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Название",
+                                "example": "CRM-dev"
+                              },
+                              "url": {
+                                "type": "string",
+                                "description": "URL",
+                                "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                              }
+                            },
+                            "title": "ApplicationRefDto"
+                          }
+                        },
+                        "title": "BranchRefDto"
+                      },
+                      {
+                        "writeOnly": true,
+                        "description": "id или name ссылки (только для записи)",
+                        "type": "string",
+                        "title": "IdOrNameString"
+                      }
+                    ]
+                  },
+                  "target-branch": {
+                    "readOnly": true,
+                    "allOf": [
+                      {
+                        "description": "Ветка, в которую залит результат."
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Имя",
+                            "example": "issue/CRM-1"
+                          },
+                          "application": {
+                            "type": "object",
+                            "description": "Приложение",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Идентификатор ссылки",
+                                "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Название",
+                                "example": "CRM-dev"
+                              },
+                              "url": {
+                                "type": "string",
+                                "description": "URL",
+                                "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                              }
+                            },
+                            "title": "ApplicationRefDto"
+                          }
+                        },
+                        "title": "BranchRefDto"
+                      }
+                    ]
+                  },
+                  "application": {
+                    "allOf": [
+                      {
+                        "description": "Приложение разработки для ветки."
+                      },
+                      {
+                        "type": "object",
+                        "description": "Приложение",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Название",
+                            "example": "CRM-dev"
+                          },
+                          "url": {
+                            "type": "string",
+                            "description": "URL",
+                            "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                          }
+                        },
+                        "title": "ApplicationRefDto"
+                      },
+                      {
+                        "writeOnly": true,
+                        "description": "id или name ссылки (только для записи)",
+                        "type": "string",
+                        "title": "IdOrNameString"
+                      }
+                    ]
+                  },
+                  "issue": {
+                    "type": "object",
+                    "description": "Задача, по которой ведётся разработка ветки.",
+                    "readOnly": true,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор",
+                        "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                      },
+                      "number": {
+                        "description": "Номер",
+                        "type": "string",
+                        "maxLength": 30,
+                        "example": "CRM-1"
+                      },
+                      "external-url": {
+                        "description": "Внешний url",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "deletion-mark": {
+                    "description": "Пометка удаления",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "version-stamp": {
+                    "description": "Идентификатор версии объекта. Если заполнен в теле запроса изменения объекта, выполняется оптимистическая блокировка.",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                  },
+                  "write-parameters": {
+                    "writeOnly": true,
+                    "description": "Дополнительные действия после записи ветки. Аналогичны командам пользовательского интерфейса. Доступны при создании, изменении, удалении. Вне транзакции записи. Для вызова необходимо установить значение true для соответствующих атрибутов или передать имена атрибутов в массиве.",
+                    "type": "object",
+                    "properties": {
+                      "merge": {
+                        "description": "Включить ветку в ветку-источник.",
+                        "type": "boolean"
+                      },
+                      "update-target-branch-application": {
+                        "description": "Обновить приложение целевой ветки (после merge).",
+                        "type": "boolean"
+                      },
+                      "cherry-pick-to": {
+                        "allOf": [
+                          {
+                            "description": "Скопировать изменения из текущей ветки в указанную."
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Идентификатор ссылки",
+                                "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Имя",
+                                "example": "issue/CRM-1"
+                              },
+                              "application": {
+                                "type": "object",
+                                "description": "Приложение",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "Идентификатор ссылки",
+                                    "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "description": "Название",
+                                    "example": "CRM-dev"
+                                  },
+                                  "url": {
+                                    "type": "string",
+                                    "description": "URL",
+                                    "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                                  }
+                                },
+                                "title": "ApplicationRefDto"
+                              }
+                            },
+                            "title": "BranchRefDto"
+                          }
+                        ]
+                      },
+                      "delete-application": {
+                        "description": "Удалить приложение ветки.",
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "title": "BranchDto"
+              }
+            },
+            "examples": {
+              "Page Example": {
+                "value": {
+                  "number": 0,
+                  "size": 25,
+                  "numberOfElements": 25,
+                  "totalElements": 30,
+                  "totalPages": 2,
+                  "first": true,
+                  "last": false,
+                  "content": [
+                    {
+                      "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+                      "name": "issue/CRM-1",
+                      "kind": "development",
+                      "project": {
+                        "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+                        "name": "Управление заказами",
+                        "prefix": "CRM"
+                      },
+                      "repository": "http://repositories/stash/scm/dt/crm.git",
+                      "deletion-mark": false,
+                      "version-stamp": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                    },
+                    {
+                      "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319909",
+                      "name": "issue/CRM-2",
+                      "kind": "development",
+                      "project": {
+                        "id": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908",
+                        "name": "Управление заказами",
+                        "prefix": "CRM"
+                      },
+                      "repository": "http://repositories/stash/scm/dt/crm.git",
+                      "deletion-mark": false,
+                      "version-stamp": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "206": {
+        "description": "Объем выборки превысил лимит. Выгружена часть данных. Для выгрузки остальных нужно повторить запрос с параметром \"last-id\". По умолчанию ограничение — 500 элементов. Чтобы его уменьшить, можно использовать параметр \"size\".",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "description": "Ветка",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Идентификатор ветки",
+                    "readOnly": true,
+                    "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Имя ветки",
+                    "example": "issue/CRM-1"
+                  },
+                  "kind": {
+                    "description": "Вид ветки",
+                    "type": "string",
+                    "enum": [
+                      "main",
+                      "release",
+                      "development"
+                    ],
+                    "default": "development"
+                  },
+                  "project": {
+                    "description": "Проект",
+                    "readOnly": true,
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Название",
+                            "example": "Управление заказами"
+                          },
+                          "prefix": {
+                            "type": "string",
+                            "description": "Префикс",
+                            "example": "CRM"
+                          }
+                        },
+                        "title": "ProjectRefDto"
+                      },
+                      {
+                        "writeOnly": true,
+                        "description": "id или name ссылки (только для записи)",
+                        "type": "string",
+                        "title": "IdOrNameString"
+                      }
+                    ]
+                  },
+                  "repository": {
+                    "type": "string",
+                    "description": "Репозиторий.\n* Для внешнего репозитория — URL.\n* Для внутреннего — \"internal\".\n",
+                    "example": "http://repositories/stash/scm/dt/crm.git",
+                    "readOnly": true
+                  },
+                  "source-branch": {
+                    "allOf": [
+                      {
+                        "description": "Ветка – источник для создания ветки. По умолчанию основная ветка проекта."
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Имя",
+                            "example": "issue/CRM-1"
+                          },
+                          "application": {
+                            "type": "object",
+                            "description": "Приложение",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Идентификатор ссылки",
+                                "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Название",
+                                "example": "CRM-dev"
+                              },
+                              "url": {
+                                "type": "string",
+                                "description": "URL",
+                                "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                              }
+                            },
+                            "title": "ApplicationRefDto"
+                          }
+                        },
+                        "title": "BranchRefDto"
+                      },
+                      {
+                        "writeOnly": true,
+                        "description": "id или name ссылки (только для записи)",
+                        "type": "string",
+                        "title": "IdOrNameString"
+                      }
+                    ]
+                  },
+                  "target-branch": {
+                    "readOnly": true,
+                    "allOf": [
+                      {
+                        "description": "Ветка, в которую залит результат."
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Имя",
+                            "example": "issue/CRM-1"
+                          },
+                          "application": {
+                            "type": "object",
+                            "description": "Приложение",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Идентификатор ссылки",
+                                "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Название",
+                                "example": "CRM-dev"
+                              },
+                              "url": {
+                                "type": "string",
+                                "description": "URL",
+                                "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                              }
+                            },
+                            "title": "ApplicationRefDto"
+                          }
+                        },
+                        "title": "BranchRefDto"
+                      }
+                    ]
+                  },
+                  "application": {
+                    "allOf": [
+                      {
+                        "description": "Приложение разработки для ветки."
+                      },
+                      {
+                        "type": "object",
+                        "description": "Приложение",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Идентификатор ссылки",
+                            "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Название",
+                            "example": "CRM-dev"
+                          },
+                          "url": {
+                            "type": "string",
+                            "description": "URL",
+                            "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                          }
+                        },
+                        "title": "ApplicationRefDto"
+                      },
+                      {
+                        "writeOnly": true,
+                        "description": "id или name ссылки (только для записи)",
+                        "type": "string",
+                        "title": "IdOrNameString"
+                      }
+                    ]
+                  },
+                  "issue": {
+                    "type": "object",
+                    "description": "Задача, по которой ведётся разработка ветки.",
+                    "readOnly": true,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор",
+                        "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                      },
+                      "number": {
+                        "description": "Номер",
+                        "type": "string",
+                        "maxLength": 30,
+                        "example": "CRM-1"
+                      },
+                      "external-url": {
+                        "description": "Внешний url",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "deletion-mark": {
+                    "description": "Пометка удаления",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "version-stamp": {
+                    "description": "Идентификатор версии объекта. Если заполнен в теле запроса изменения объекта, выполняется оптимистическая блокировка.",
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                  },
+                  "write-parameters": {
+                    "writeOnly": true,
+                    "description": "Дополнительные действия после записи ветки. Аналогичны командам пользовательского интерфейса. Доступны при создании, изменении, удалении. Вне транзакции записи. Для вызова необходимо установить значение true для соответствующих атрибутов или передать имена атрибутов в массиве.",
+                    "type": "object",
+                    "properties": {
+                      "merge": {
+                        "description": "Включить ветку в ветку-источник.",
+                        "type": "boolean"
+                      },
+                      "update-target-branch-application": {
+                        "description": "Обновить приложение целевой ветки (после merge).",
+                        "type": "boolean"
+                      },
+                      "cherry-pick-to": {
+                        "allOf": [
+                          {
+                            "description": "Скопировать изменения из текущей ветки в указанную."
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Идентификатор ссылки",
+                                "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Имя",
+                                "example": "issue/CRM-1"
+                              },
+                              "application": {
+                                "type": "object",
+                                "description": "Приложение",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "Идентификатор ссылки",
+                                    "example": "0193dde1-d10b-7c3a-a0eb-4a0ba0319908"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "description": "Название",
+                                    "example": "CRM-dev"
+                                  },
+                                  "url": {
+                                    "type": "string",
+                                    "description": "URL",
+                                    "example": "http://127.0.0.1:9090/applications/CRM-dev"
+                                  }
+                                },
+                                "title": "ApplicationRefDto"
+                              }
+                            },
+                            "title": "BranchRefDto"
+                          }
+                        ]
+                      },
+                      "delete-application": {
+                        "description": "Удалить приложение ветки.",
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "title": "BranchDto"
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "* 3 — Некорректное значение параметра\n* 9 — Запрос не может быть обработан в текущем состоянии системы\n* 11 — Значение выходит за пределы допустимого диапазона\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "16 — Отсутствие аутентификации",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "7 — Отсутствие авторизации",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "5 — Неизвестный идентификатор",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "13 — Ошибка на стороне сервера",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      }
+    },
+    "method": "get",
+    "path": "/console/api/v2/branches",
+    "servers": [
+      {
+        "url": "https://1cmycloud.com"
+      },
+      {
+        "url": "http://localhost:9090"
+      }
+    ],
+    "security": [
+      {
+        "bearerAuth": []
+      }
+    ],
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "info": {
+      "version": "2.0",
+      "title": "Команды API",
+      "description": "Здесь содержится справочная информация по командам API панели управления\n\n## Авторизация и аутентификация для доступа к API панели управления\n\nКоманды API панели управления доступны только авторизованным пользователям [панели управления](../topics/control-panel.mdx) (администраторам и разработчикам приложений) и недоступны пользователям приложений вне зависимости от их роли. Неавторизованным пользователям требуется пройти процедуру авторизации. Далее, после авторизации в системе, для доступа к API используется аутентификация с помощью токена доступа. Для получения токена доступа выполните действия, описанные ниже.\n\nВ профиле пользователя, в разделе [**Ключи доступа**](../topics/get-user-key.mdx#получение-ключа-доступа-к-панели-управления), получите идентификатор и секрет клиента. Они будут использоваться далее при создании запроса.\n\nПолучите токен с помощью запроса вида:\n\n```text\nPOST /console/sys/token\nContent-Type: application/x-www-form-urlencoded\nAuthorization: Basic <ClientId:ClientSecret в кодировке Base64>\ngrant_type=CLIENT_CREDENTIALS\n```\n\nНапример, для HTTP-запроса:\n\n```text\nPOST /console/sys/token HTTP/1.1\nHost: localhost:9090\nContent-Type: application/x-www-form-urlencoded\nAuthorization: Basic dlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az06dTNUUFlTMVplRV9TVFJJeFQ4VDh6R3NQYnVRcXFJbDlRbUhDdlJUOXd5cz0=\nContent-Length: 29\n\ngrant_type=client_credentials\n```\n\nТак будет выглядеть ответ в формате JSON с токеном и информацией о нем:\n\n```json\n{\n    \"id_token\": \"eyJhbGciOiJSUzUxMiJ9.eyJpc3MiOiI3R0xnMmV0WkZzOG4wOXg1N1pyamlieTdRSEE4c25LLVl4OXJ2eFVoMnVnPSIsInN1YiI6IntcclxuICBcInVzZXItaWRcIiA6IFwiMjVkMjc1N2QtZWQ2Yi00OGFlLTlhYmYtYTU2M2QwMDA1MmFlXCIsXHJcbiAgXCJ1c2VyLWxpc3QtaWRcIiA6IFwiNDExYzVjYTAtOWFkMy00Y2RiLTgzZmUtMDZhMGYyMGNiNWIyXCIsXHJcbiAgXCJ1c2VyLXByZXNlbnRhdGlvblwiIDogXCJhZG1pblwiLFxyXG4gIFwiYXV0aC1pZGVudGl0eVwiIDoge1xyXG4gICAgXCJuYW1lXCIgOiBcInZRQkZtOVpDY1ZmYVdmT2Z2UE51bmtaZ3BvY3BJQTF4Zk1ubG5pcDZkdWs9XCIsXHJcbiAgICBcImRvbWFpblwiIDogXCJ1c2VyX3Rva2Vuc1wiXHJcbiAgfVxyXG59IiwiYXVkIjoidlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az0iLCJpYXQiOjE3MTA0MjI3NzMsImV4cCI6MTcxMDQyNjM3MywiYXRfaGFzaCI6IkFjY2Vzc1Rva2VuIGhhc2ggKG5vdCBpbXBsZW1lbnRlZCkifQ.NqLg2JfHuwcHVfjg4ePJGmIhKDDX5wEfduuO5maJoFmI3YGBk4oBbfC6iukKLY1CPUcsiLS0suU-2vaNvfBQt4ePE4l57uED1j7UKVj5ih2NHDuaHBBYDZQjXWC-0FyArC3jHcE7MjLAOqkymWIn0xtHOjLNNct1XdXfHoeZfBU\",\n    \"token_type\": \"Bearer\",\n    \"access_token\": \"Not implemented\"\n}\n```\n\nДалее, полученный токен будет использоваться для получения доступа к API. Тип авторизации: `Bearer` (`Bearer Token`).\n\nТокен действителен в течение часа. Таким образом, можно сделать сразу несколько вызовов (возможно разных команд API), используя уже полученный токен, а не получая его заново.\n\nЕсли токен устарел, то при вызове API вернется ответ с кодом 401. Это значит, что нужно снова запросить токен аутентификации.\n\n## Пример\n\nРассмотрим пример, в котором используем токен, чтобы [получить список приложений](get-console-api-v-2-applications.api.mdx) в панели управления.\n\nВыполните запрос с методом GET по адресу [http://localhost:9090/console/api/v2/applications](http://localhost:9090/console/api/v2/applications). При необходимости скопируйте и вставьте полученный ранее токен, а также указанный выше тип авторизации.\n\nТаким образом, ваш HTTP-запрос будет выглядеть так:\n\n```text\nGET /console/api/v2/applications HTTP/1.1\nHost: localhost:9090\nAuthorization: Bearer eyJhbGciOiJSUzUxMiJ9.eyJpc3MiOiI3R0xnMmV0WkZzOG4wOXg1N1pyamlieTdRSEE4c25LLVl4OXJ2eFVoMnVnPSIsInN1YiI6IntcclxuICBcInVzZXItaWRcIiA6IFwiMjVkMjc1N2QtZWQ2Yi00OGFlLTlhYmYtYTU2M2QwMDA1MmFlXCIsXHJcbiAgXCJ1c2VyLWxpc3QtaWRcIiA6IFwiNDExYzVjYTAtOWFkMy00Y2RiLTgzZmUtMDZhMGYyMGNiNWIyXCIsXHJcbiAgXCJ1c2VyLXByZXNlbnRhdGlvblwiIDogXCJhZG1pblwiLFxyXG4gIFwiYXV0aC1pZGVudGl0eVwiIDoge1xyXG4gICAgXCJuYW1lXCIgOiBcInZRQkZtOVpDY1ZmYVdmT2Z2UE51bmtaZ3BvY3BJQTF4Zk1ubG5pcDZkdWs9XCIsXHJcbiAgICBcImRvbWFpblwiIDogXCJ1c2VyX3Rva2Vuc1wiXHJcbiAgfVxyXG59IiwiYXVkIjoidlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az0iLCJpYXQiOjE3MTA0Mzg1NjIsImV4cCI6MTcxMDQ0MjE2MiwiYXRfaGFzaCI6IkFjY2Vzc1Rva2VuIGhhc2ggKG5vdCBpbXBsZW1lbnRlZCkifQ.VQOJf59w8wQejc1cUBJWh5DDS8P6KDcbihbANEGkzcu_gDOkau4FOwu2YIBB8ddNfdsxnEivANqr1R26hgL_RcKn28jezAYQ6gy3IyM2TMsPW5APixD4Q6n4YJkWCYGLR8gvJ_xvQUepX7LtGjAs9sE5eTJ150jSgGBbCRZHjBY\n```\n\nОтвет будет выглядеть следующим образом:\n\n```json\n[\n    {\n        \"display-name\": \"DemoCRM-dev\",\n        \"user-lists\": [\n            \"dbc195ed-3b80-4717-85d4-91dc60f406c5\",\n            \"411c5ca0-9ad3-4cdb-83fe-06a0f20cb5b2\"\n        ],\n        \"current-task\": null,\n        \"description\": \"\",\n        \"project\": {\n            \"id\": \"1eeb5447-c4f8-635e-b776-199d8903fded\"\n        },\n        \"endpoint\": null,\n        \"source\": {\n            \"project-version-id\": \"1eeb5447-c51f-6466-b776-199d8903fded\",\n            \"project-name\": \"DemoCRM\",\n            \"type\": \"image\",\n            \"image-id\": \"1eeb5447-c4f8-635e-b776-199d8903fded\",\n            \"project-version\": \"1.0\"\n        },\n        \"error\": null,\n        \"uri\": \"http://127.0.0.1:9090/applications/DemoCRM-dev\",\n        \"space-id\": \"1eeb5437-b8d7-655d-b776-199d8903fded\",\n        \"date-created\": \"2024-01-17T14:27:04.383Z\",\n        \"technology-version\": \"5.0.1-20240117.33032-636\",\n        \"name\": \"DemoCRM-dev\",\n        \"default-user-list\": \"dbc195ed-3b80-4717-85d4-91dc60f406c5\",\n        \"development-mode\": true,\n        \"debugging\": true,\n        \"autostarting-scheduled-jobs\": true,\n        \"id\": \"1eeb5447-c5bb-6867-b776-199d8903fded\",\n        \"autostarting-esb\": false,\n        \"status\": \"Running\"\n    }\n]\n```\n\nКак видно из примера выше, полученный ранее токен был успешно использован для аутентификации пользователя и получения доступа к API панели управления.\n"
+    },
+    "postman": {
+      "name": "Получить список веток",
+      "description": {
+        "content": "Получить список веток. Метод поддерживает пагинацию. Для этого укажите хотя бы один из параметров \"page\" или \"result\".",
+        "type": "text/plain"
+      },
+      "url": {
+        "path": [
+          "console",
+          "api",
+          "v2",
+          "branches"
+        ],
+        "host": [
+          "{{baseUrl}}"
+        ],
+        "query": [
+          {
+            "disabled": false,
+            "description": {
+              "content": "Значения для отбора веток, по соответствующим реквизитам. Допускается множество значений одного или нескольких параметров (по 'ИЛИ')",
+              "type": "text/plain"
+            },
+            "key": "id, name",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Идентификатор проекта для отбора веток, по соответствующим реквизитам. Допускается множество значений одного или нескольких параметров (по 'ИЛИ'). Совместим с параметрами отбора по реквизитам ветки (по 'И'). Если не указаны, выборка по всем доступным проектам.",
+              "type": "text/plain"
+            },
+            "key": "project-id, project-name, project-prefix",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Идентификатор пространства для отбора веток (при работе в облаке). Совместим с параметрами отбора по проекту и ветки (по 'И'). Если не указан, выборка по всем доступным пространствам.",
+              "type": "text/plain"
+            },
+            "key": "space-id",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Идентификатор последней ветки из предыдущей загруженной порции. Для выборки следующей порции, если в предыдущую все не поместились (код ответа 206).",
+              "type": "text/plain"
+            },
+            "key": "last-id",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Имена атрибутов ветки, которые будут выгружены, в дополнение к основным. Через \",\". Для сокращения объема выгрузки. По умолчанию выгружаются все. Если параметр указан с пустым значением то выгружаются все, кроме перечисленных в этом списке выбора.",
+              "type": "text/plain"
+            },
+            "key": "include",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Аналогично \"include\", только указываются имена атрибутов, которые будут пропущены. Позволяет исключать любые атрибуты, в т.ч. основные. Совместим с \"include\".",
+              "type": "text/plain"
+            },
+            "key": "exclude",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Страница пагинированного ответа (нумерация начинается с 0).",
+              "type": "text/plain"
+            },
+            "key": "page",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Размер страницы пагинированного ответа.",
+              "type": "text/plain"
+            },
+            "key": "size",
+            "value": ""
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "Формат тела пагинированного ответа: массив данных или в структуре Page",
+              "type": "text/plain"
+            },
+            "key": "result",
+            "value": ""
+          }
+        ],
+        "variable": []
+      },
+      "header": [
+        {
+          "key": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "method": "GET"
+    }
+  }
+}

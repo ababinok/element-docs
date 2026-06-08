@@ -13,7 +13,7 @@ Many error responses use an object like:
 }
 ```
 
-Use each selected endpoint's `responses` entry from `openapi-full.json`; error code meanings are endpoint-specific.
+Use each selected endpoint's `responses` entry from `python3 scripts/search_console_api.py --slug <slug> --full`; error code meanings are endpoint-specific.
 
 ## Common HTTP Handling
 

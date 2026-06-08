@@ -1,0 +1,229 @@
+{
+  "slug": "get-console-api-v-2-user-lists-user-list-id-users-user-id-accounts",
+  "api": {
+    "tags": [
+      "Пользователи"
+    ],
+    "description": "Получить список учетных записей пользователя",
+    "operationId": "get-console-api-v2-user-lists-UserListId-users-UserId-accounts",
+    "parameters": [
+      {
+        "name": "UserListId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "UserId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "OK",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "description": "Учетная запись",
+                "properties": {
+                  "account-id": {
+                    "type": "string",
+                    "description": "Идентификатор учетной записи"
+                  },
+                  "account-service-id": {
+                    "type": "string",
+                    "description": "Идентификатор сервиса учетных записей"
+                  },
+                  "account-service-local-id": {
+                    "type": "string",
+                    "description": "Локальный идентификатор сервиса учетных записей"
+                  },
+                  "account-service-type": {
+                    "type": "string",
+                    "description": "Тип сервиса учетных записей"
+                  }
+                },
+                "x-examples": {
+                  "Example 1": [
+                    {
+                      "account-id": "string",
+                      "account-service-id": "string",
+                      "account-service-local-id": "string",
+                      "account-service-type": "string"
+                    }
+                  ]
+                },
+                "title": "Account"
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "5 — Неизвестный идентификатор",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "13 — Ошибка на стороне сервера",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "description": "Код ошибки"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Статус ошибки"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Сообщение ошибки"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Детали ошибки"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "code": 3,
+                  "status": "INVALID_ARGUMENT",
+                  "message": "1111 is not a valid UUID.",
+                  "details": "details"
+                }
+              },
+              "title": "ErrorData"
+            }
+          }
+        }
+      }
+    },
+    "method": "get",
+    "path": "/console/api/v2/user-lists/{UserListId}/users/{UserId}/accounts",
+    "servers": [
+      {
+        "url": "https://1cmycloud.com"
+      },
+      {
+        "url": "http://localhost:9090"
+      }
+    ],
+    "security": [
+      {
+        "bearerAuth": []
+      }
+    ],
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "info": {
+      "version": "2.0",
+      "title": "Команды API",
+      "description": "Здесь содержится справочная информация по командам API панели управления\n\n## Авторизация и аутентификация для доступа к API панели управления\n\nКоманды API панели управления доступны только авторизованным пользователям [панели управления](../topics/control-panel.mdx) (администраторам и разработчикам приложений) и недоступны пользователям приложений вне зависимости от их роли. Неавторизованным пользователям требуется пройти процедуру авторизации. Далее, после авторизации в системе, для доступа к API используется аутентификация с помощью токена доступа. Для получения токена доступа выполните действия, описанные ниже.\n\nВ профиле пользователя, в разделе [**Ключи доступа**](../topics/get-user-key.mdx#получение-ключа-доступа-к-панели-управления), получите идентификатор и секрет клиента. Они будут использоваться далее при создании запроса.\n\nПолучите токен с помощью запроса вида:\n\n```text\nPOST /console/sys/token\nContent-Type: application/x-www-form-urlencoded\nAuthorization: Basic <ClientId:ClientSecret в кодировке Base64>\ngrant_type=CLIENT_CREDENTIALS\n```\n\nНапример, для HTTP-запроса:\n\n```text\nPOST /console/sys/token HTTP/1.1\nHost: localhost:9090\nContent-Type: application/x-www-form-urlencoded\nAuthorization: Basic dlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az06dTNUUFlTMVplRV9TVFJJeFQ4VDh6R3NQYnVRcXFJbDlRbUhDdlJUOXd5cz0=\nContent-Length: 29\n\ngrant_type=client_credentials\n```\n\nТак будет выглядеть ответ в формате JSON с токеном и информацией о нем:\n\n```json\n{\n    \"id_token\": \"eyJhbGciOiJSUzUxMiJ9.eyJpc3MiOiI3R0xnMmV0WkZzOG4wOXg1N1pyamlieTdRSEE4c25LLVl4OXJ2eFVoMnVnPSIsInN1YiI6IntcclxuICBcInVzZXItaWRcIiA6IFwiMjVkMjc1N2QtZWQ2Yi00OGFlLTlhYmYtYTU2M2QwMDA1MmFlXCIsXHJcbiAgXCJ1c2VyLWxpc3QtaWRcIiA6IFwiNDExYzVjYTAtOWFkMy00Y2RiLTgzZmUtMDZhMGYyMGNiNWIyXCIsXHJcbiAgXCJ1c2VyLXByZXNlbnRhdGlvblwiIDogXCJhZG1pblwiLFxyXG4gIFwiYXV0aC1pZGVudGl0eVwiIDoge1xyXG4gICAgXCJuYW1lXCIgOiBcInZRQkZtOVpDY1ZmYVdmT2Z2UE51bmtaZ3BvY3BJQTF4Zk1ubG5pcDZkdWs9XCIsXHJcbiAgICBcImRvbWFpblwiIDogXCJ1c2VyX3Rva2Vuc1wiXHJcbiAgfVxyXG59IiwiYXVkIjoidlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az0iLCJpYXQiOjE3MTA0MjI3NzMsImV4cCI6MTcxMDQyNjM3MywiYXRfaGFzaCI6IkFjY2Vzc1Rva2VuIGhhc2ggKG5vdCBpbXBsZW1lbnRlZCkifQ.NqLg2JfHuwcHVfjg4ePJGmIhKDDX5wEfduuO5maJoFmI3YGBk4oBbfC6iukKLY1CPUcsiLS0suU-2vaNvfBQt4ePE4l57uED1j7UKVj5ih2NHDuaHBBYDZQjXWC-0FyArC3jHcE7MjLAOqkymWIn0xtHOjLNNct1XdXfHoeZfBU\",\n    \"token_type\": \"Bearer\",\n    \"access_token\": \"Not implemented\"\n}\n```\n\nДалее, полученный токен будет использоваться для получения доступа к API. Тип авторизации: `Bearer` (`Bearer Token`).\n\nТокен действителен в течение часа. Таким образом, можно сделать сразу несколько вызовов (возможно разных команд API), используя уже полученный токен, а не получая его заново.\n\nЕсли токен устарел, то при вызове API вернется ответ с кодом 401. Это значит, что нужно снова запросить токен аутентификации.\n\n## Пример\n\nРассмотрим пример, в котором используем токен, чтобы [получить список приложений](get-console-api-v-2-applications.api.mdx) в панели управления.\n\nВыполните запрос с методом GET по адресу [http://localhost:9090/console/api/v2/applications](http://localhost:9090/console/api/v2/applications). При необходимости скопируйте и вставьте полученный ранее токен, а также указанный выше тип авторизации.\n\nТаким образом, ваш HTTP-запрос будет выглядеть так:\n\n```text\nGET /console/api/v2/applications HTTP/1.1\nHost: localhost:9090\nAuthorization: Bearer eyJhbGciOiJSUzUxMiJ9.eyJpc3MiOiI3R0xnMmV0WkZzOG4wOXg1N1pyamlieTdRSEE4c25LLVl4OXJ2eFVoMnVnPSIsInN1YiI6IntcclxuICBcInVzZXItaWRcIiA6IFwiMjVkMjc1N2QtZWQ2Yi00OGFlLTlhYmYtYTU2M2QwMDA1MmFlXCIsXHJcbiAgXCJ1c2VyLWxpc3QtaWRcIiA6IFwiNDExYzVjYTAtOWFkMy00Y2RiLTgzZmUtMDZhMGYyMGNiNWIyXCIsXHJcbiAgXCJ1c2VyLXByZXNlbnRhdGlvblwiIDogXCJhZG1pblwiLFxyXG4gIFwiYXV0aC1pZGVudGl0eVwiIDoge1xyXG4gICAgXCJuYW1lXCIgOiBcInZRQkZtOVpDY1ZmYVdmT2Z2UE51bmtaZ3BvY3BJQTF4Zk1ubG5pcDZkdWs9XCIsXHJcbiAgICBcImRvbWFpblwiIDogXCJ1c2VyX3Rva2Vuc1wiXHJcbiAgfVxyXG59IiwiYXVkIjoidlFCRm05WkNjVmZhV2ZPZnZQTnVua1pncG9jcElBMXhmTW5sbmlwNmR1az0iLCJpYXQiOjE3MTA0Mzg1NjIsImV4cCI6MTcxMDQ0MjE2MiwiYXRfaGFzaCI6IkFjY2Vzc1Rva2VuIGhhc2ggKG5vdCBpbXBsZW1lbnRlZCkifQ.VQOJf59w8wQejc1cUBJWh5DDS8P6KDcbihbANEGkzcu_gDOkau4FOwu2YIBB8ddNfdsxnEivANqr1R26hgL_RcKn28jezAYQ6gy3IyM2TMsPW5APixD4Q6n4YJkWCYGLR8gvJ_xvQUepX7LtGjAs9sE5eTJ150jSgGBbCRZHjBY\n```\n\nОтвет будет выглядеть следующим образом:\n\n```json\n[\n    {\n        \"display-name\": \"DemoCRM-dev\",\n        \"user-lists\": [\n            \"dbc195ed-3b80-4717-85d4-91dc60f406c5\",\n            \"411c5ca0-9ad3-4cdb-83fe-06a0f20cb5b2\"\n        ],\n        \"current-task\": null,\n        \"description\": \"\",\n        \"project\": {\n            \"id\": \"1eeb5447-c4f8-635e-b776-199d8903fded\"\n        },\n        \"endpoint\": null,\n        \"source\": {\n            \"project-version-id\": \"1eeb5447-c51f-6466-b776-199d8903fded\",\n            \"project-name\": \"DemoCRM\",\n            \"type\": \"image\",\n            \"image-id\": \"1eeb5447-c4f8-635e-b776-199d8903fded\",\n            \"project-version\": \"1.0\"\n        },\n        \"error\": null,\n        \"uri\": \"http://127.0.0.1:9090/applications/DemoCRM-dev\",\n        \"space-id\": \"1eeb5437-b8d7-655d-b776-199d8903fded\",\n        \"date-created\": \"2024-01-17T14:27:04.383Z\",\n        \"technology-version\": \"5.0.1-20240117.33032-636\",\n        \"name\": \"DemoCRM-dev\",\n        \"default-user-list\": \"dbc195ed-3b80-4717-85d4-91dc60f406c5\",\n        \"development-mode\": true,\n        \"debugging\": true,\n        \"autostarting-scheduled-jobs\": true,\n        \"id\": \"1eeb5447-c5bb-6867-b776-199d8903fded\",\n        \"autostarting-esb\": false,\n        \"status\": \"Running\"\n    }\n]\n```\n\nКак видно из примера выше, полученный ранее токен был успешно использован для аутентификации пользователя и получения доступа к API панели управления.\n"
+    },
+    "postman": {
+      "name": "Получить учетные записи",
+      "description": {
+        "content": "Получить список учетных записей пользователя",
+        "type": "text/plain"
+      },
+      "url": {
+        "path": [
+          "console",
+          "api",
+          "v2",
+          "user-lists",
+          ":UserListId",
+          "users",
+          ":UserId",
+          "accounts"
+        ],
+        "host": [
+          "{{baseUrl}}"
+        ],
+        "query": [],
+        "variable": [
+          {
+            "disabled": false,
+            "description": {
+              "content": "(Required) ",
+              "type": "text/plain"
+            },
+            "type": "any",
+            "value": "",
+            "key": "UserListId"
+          },
+          {
+            "disabled": false,
+            "description": {
+              "content": "(Required) ",
+              "type": "text/plain"
+            },
+            "type": "any",
+            "value": "",
+            "key": "UserId"
+          }
+        ]
+      },
+      "header": [
+        {
+          "key": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "method": "GET"
+    }
+  }
+}

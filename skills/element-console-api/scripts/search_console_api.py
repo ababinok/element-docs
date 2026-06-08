@@ -14,6 +14,10 @@ def load_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_method(slug: str) -> dict:
+    return load_json(REFERENCES / "openapi-methods" / f"{slug}.json")["api"]
+
+
 def score_method(method: dict, query: str) -> int:
     if not query:
         return 1
@@ -35,7 +39,7 @@ def main() -> int:
     parser.add_argument("--method", help="Filter by HTTP method.")
     parser.add_argument("--slug", help="Print one exact method by slug.")
     parser.add_argument("--full", action="store_true", help="Print full decoded OpenAPI payload for matched methods.")
-    parser.add_argument("--limit", type=int, default=20)
+    parser.add_argument("--limit", type=int)
     args = parser.parse_args()
 
     index = load_json(REFERENCES / "api-index.json")
@@ -53,14 +57,15 @@ def main() -> int:
         ]
 
     query = " ".join(args.query)
+    limit = args.limit if args.limit is not None else (1 if args.full else 20)
+
     ranked = [(score_method(item, query), item) for item in methods]
     ranked = [(score, item) for score, item in ranked if score > 0]
     ranked.sort(key=lambda pair: (-pair[0], pair[1]["groupTitle"] or "", pair[1]["path"]))
-    selected = [item for _, item in ranked[: args.limit]]
+    selected = [item for _, item in ranked[:limit]]
 
     if args.full:
-        full = load_json(REFERENCES / "openapi-full.json")["methods"]
-        print(json.dumps({item["slug"]: full[item["slug"]] for item in selected}, ensure_ascii=False, indent=2))
+        print(json.dumps({item["slug"]: load_method(item["slug"]) for item in selected}, ensure_ascii=False, indent=2))
         return 0
 
     for item in selected:
