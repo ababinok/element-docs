@@ -1,0 +1,20 @@
+{
+  "name": "element-docs",
+  "interface": {
+    "displayName": "Element Docs"
+  },
+  "plugins": [
+    {
+      "name": "element-docs",
+      "source": {
+        "source": "local",
+        "path": "./plugins/element-docs"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
