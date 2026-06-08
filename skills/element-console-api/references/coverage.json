@@ -1,0 +1,13 @@
+{
+  "sourceRoot": "/Users/ababinok/Documents/Developing/codex/element-docs/data/docs/element/9.2",
+  "generatedAt": "2026-06-08T13:28:59.890422+00:00",
+  "consoleApiMethods": 166,
+  "groups": 13,
+  "schemas": 87,
+  "methodsLinkedToGroups": 166,
+  "methodsWithParameters": 151,
+  "methodsWithRequestBody": 57,
+  "methodsWithResponses": 166,
+  "methodsWithSecurity": 166,
+  "methodsWithExamples": 166
+}

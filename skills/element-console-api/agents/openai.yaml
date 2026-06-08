@@ -1,0 +1,4 @@
+interface:
+  display_name: "Element Console API"
+  short_description: "Find and use 1C:Element Console API methods"
+  default_prompt: "Help me find the right 1C:Element Console API method and build the request."

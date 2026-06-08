@@ -1,0 +1,18 @@
+{
+  "name": "element-docs",
+  "version": "0.1.0",
+  "description": "Codex skills and references for 1C:Enterprise Element documentation.",
+  "author": {
+    "name": "Local developer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Element Docs",
+    "shortDescription": "Work with 1C:Element documentation and Console API.",
+    "longDescription": "Element Docs provides Codex skills and generated references for working with 1C:Enterprise Element documentation, including the control panel Console API.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Help me use the 1C:Element Console API."
+  }
+}

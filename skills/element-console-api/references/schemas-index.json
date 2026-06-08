@@ -1,0 +1,1537 @@
+{
+  "coverage": {
+    "sourceRoot": "/Users/ababinok/Documents/Developing/codex/element-docs/data/docs/element/9.2",
+    "generatedAt": "2026-06-08T13:28:59.890422+00:00",
+    "consoleApiMethods": 166,
+    "groups": 13,
+    "schemas": 87,
+    "methodsLinkedToGroups": 166,
+    "methodsWithParameters": 151,
+    "methodsWithRequestBody": 57,
+    "methodsWithResponses": 166,
+    "methodsWithSecurity": 166,
+    "methodsWithExamples": 166
+  },
+  "schemas": [
+    {
+      "slug": "accesstoken",
+      "title": "AccessToken",
+      "description": "Токен доступа",
+      "fields": [
+        "Идентификатор клиента",
+        "Секрет клиента",
+        "Описание токена доступа"
+      ],
+      "examples": [
+        "{ \"client-id\" : \"string\" , \"client-secret\" : \"string\" , \"description\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "account",
+      "title": "Account",
+      "description": "Учетная запись",
+      "fields": [
+        "Идентификатор учетной записи",
+        "Идентификатор сервиса учетных записей",
+        "Локальный идентификатор сервиса учетных записей",
+        "Тип сервиса учетных записей"
+      ],
+      "examples": [
+        "{ \"account-id\" : \"string\" , \"account-service-id\" : \"string\" , \"account-service-local-id\" : \"string\" , \"account-service-type\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "accountservicesettings",
+      "title": "AccountServiceSettings",
+      "description": "Настройки сервисов внешних учетных записей",
+      "fields": [
+        "Флаг использования сервиса внешних учетных записей",
+        "Дополнительные настройки в виде \"ключ — значение\"",
+        "Ключ",
+        "Локальный идентификатор сервиса внешних учетных записей",
+        "Идентификатор сервиса внешних учетных записей",
+        "Тип сервиса внешних учетных записей (может иметь значения Local, Cas, ActiveDirectory, Esia, OAuth2)",
+        "Флаг создания нового пользователя в случае, когда была совершена успешная аутентификация",
+        "Правила вычисления свойств пользователя из ответа сервиса учетных записей",
+        "Формат ответа сервиса с информацией о пользователе (Json/Xml)",
+        "Правило вычисления представления пользователя (в формате JsonPath/XPath)",
+        "Правило вычисления телефона пользователя (в формате JsonPath/XPath)",
+        "Правило вычисления почты пользователя (в формате JsonPath/XPath)"
+      ],
+      "examples": [
+        "{ \"enabled\" : true , \"additional-settings\" : { \"key\" : \"string\" } , \"local-id\" : \"string\" , \"account-service-id\" : \"string\" , \"account-service-type\" : \"Local\" , \"create-user-on-auth\" : true , \"calculation-rules\" : { \"response-kind\" : \"string\" , \"presentation-rule\" : \"string\" , \"phone-rule\" : \"string\" , \"email-rule\" : \"string\" } }"
+      ]
+    },
+    {
+      "slug": "allowedauths",
+      "title": "AllowedAuths",
+      "description": "Разрешенные способы входа",
+      "fields": [
+        "Тип сервиса внешних учетных записей для разрешенного способа входа",
+        "Описание разрешенного способа входа",
+        "Обязательность двухфакторной аутентификации",
+        "Возможность входа по указанному типу сервиса"
+      ],
+      "examples": [
+        "{ \"service-type\" : \"LOCAL\" , \"description\" : \"string\" , \"second-factor-required\" : true , \"enabled\" : true }"
+      ]
+    },
+    {
+      "slug": "allowedauthschangerequest",
+      "title": "AllowedAuthsChangeRequest",
+      "description": "Разрешенные способы входа",
+      "fields": [
+        "Тип сервиса внешних учетных записей для разрешенного способа входа",
+        "Обязательность двухфакторной аутентификации",
+        "Возможность входа по указанному типу сервиса"
+      ],
+      "examples": [
+        "{ \"service-type\" : \"LOCAL\" , \"second-factor-required\" : true , \"enabled\" : true }"
+      ]
+    },
+    {
+      "slug": "applicationdebuginfo",
+      "title": "ApplicationDebugInfo",
+      "description": "Информация для открытия сессии отладки",
+      "fields": [
+        "Токен для сессии отладки",
+        "Адрес отладчика"
+      ],
+      "examples": [
+        "{ \"debug-token\" : \"string\" , \"debug-address\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "applicationdeploymentinstance",
+      "title": "ApplicationDeploymentInstance",
+      "description": "Экземпляр технологии приложения",
+      "fields": [
+        "Идентификатор экземпляра технологии",
+        "Имя экземпляра технологии",
+        "Версия технологии",
+        "Статус экземпляра технологии",
+        "Дата создания"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"name\" : \"string\" , \"version\" : \"string\" , \"status\" : \"string\" , \"date-created\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "applicationdumpdata",
+      "title": "ApplicationDumpData",
+      "description": "Данные дампа приложения",
+      "fields": [
+        "Идентификатор дампа",
+        "Флаг включения списков пользователей в дамп",
+        "Флаг включения двоичных данных в дамп",
+        "Флаг включения данных регистрации в системе взаимодействия в дамп",
+        "Ссылка на файла со списками пользователей",
+        "Ссылка на файл с приложением",
+        "Статус дампа",
+        "Дата создания",
+        "Описание",
+        "Размер дампа списков пользователей в байтах",
+        "Размер дампа приложения в байтах"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"include-users\" : true , \"include-binary-data\" : true , \"include-collaboration-registration-data\" : true , \"user-list-file-ref\" : \"string\" , \"application-file-ref\" : \"string\" , \"status\" : \"string\" , \"date-created\" : \"string\" , \"description\" : \"string\" , \"user-list-size-bytes\" : 0 , \"application-size-bytes\" : 0 }"
+      ]
+    },
+    {
+      "slug": "applicationdumpdescription",
+      "title": "ApplicationDumpDescription",
+      "description": "Описание дампа приложения",
+      "fields": [
+        "Описание"
+      ],
+      "examples": [
+        "{ \"description\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "applicationendpoint",
+      "title": "ApplicationEndpoint",
+      "description": "Конечная точка приложения",
+      "fields": [
+        "Идентификатор конечной точки",
+        "Полное доменное имя для приложения",
+        "Контекст публикации приложения",
+        "Флаг активности точки"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"fqdn\" : \"string\" , \"context-path\" : \"string\" , \"active\" : true }"
+      ]
+    },
+    {
+      "slug": "applicationendpointdto",
+      "title": "ApplicationEndpointDto",
+      "description": "Описание веб-адреса приложения",
+      "fields": [
+        "Доменное имя",
+        "HTTP-путь приложения",
+        "Тип привязки сертификата (manual - ручная загрузка сертификата)"
+      ],
+      "examples": [
+        "{ \"fqdn\" : \"test.example.com\" , \"context-path\" : \"/app\" , \"certificate-type\" : \"manual\" }"
+      ]
+    },
+    {
+      "slug": "applicationendpointinfo",
+      "title": "ApplicationEndpointInfo",
+      "description": "Описание веб-адреса приложения",
+      "fields": [
+        "Список возможных типов ДНС записей для проверки маршрутизации доменного имени",
+        "Тип ДНС записи",
+        "Имя ДНС записи",
+        "Список значений ДНС записи",
+        "Доменное имя",
+        "HTTP-путь приложения",
+        "Описание сертификата, привязанного к веб-адресу",
+        "Статус сертификата",
+        "Доменное имя",
+        "Дата выпуска сертификата",
+        "Дата окончания действия сертификата",
+        "Идентификатор сертификата",
+        "Имя сертификата",
+        "Флаг активности веб-адреса",
+        "Идентификатор веб-адреса",
+        "Сообщения о веб-адресе, описание ошибок",
+        "Статус публикации веб-адреса",
+        "Тип привязки сертификата (manual - ручная загрузка сертификата)"
+      ],
+      "examples": [
+        "{ \"domain-validation\" : [ { \"type\" : \"cname\" , \"name\" : \"test.example.com.\" , \"values\" : [ \"app.1cmycloud.com.\" ] } ] , \"fqdn\" : \"test.example.com\" , \"context-path\" : \"/app\" , \"certificate\" : { \"status\" : \"valid\" , \"fqdn\" : \"test.example.com\" , \"issued-on\" : \"2024-04-01T14:03:24\" , \"expires-on\" : \"2026-04-01T14:03:24\" , \"certificate-id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"certificate-name\" : \"test.example.com\" } , \"is-active\" : true , \"id\" : \"0193df2d-e784-79a6-97c3-9952128288d2\" , \"message\" : \"Не удалось привязать сертификат. Повторите попытку позже, или попробуйте привзать другой сертификат.\" , \"status\" : \"ready\" , \"certificate-type\" : \"manual\" }"
+      ]
+    },
+    {
+      "slug": "applicationendpointvalidationinfo",
+      "title": "ApplicationEndpointValidationInfo",
+      "description": "Данные проверки веб-адреса о возможности привязки",
+      "fields": [
+        "Флаг корректности доменного имени и HTTP-пути, который будет использован для построения веб-адреса",
+        "Доменное имя, которое будет привязано",
+        "Флаг доступности, указанного доменного имени для привязки",
+        "HTTP-путь для доступа к приложению (может быть пустым)",
+        "Сообщения об ошибках проверки",
+        "Список возможных типов ДНС записей для проверки маршрутизации доменного имени",
+        "Тип ДНС записи",
+        "Имя ДНС записи",
+        "Список значений ДНС записи"
+      ],
+      "examples": [
+        "{ \"is-valid\" : true , \"fqdn\" : \"test.example.com\" , \"is-available\" : true , \"context-path\" : \"/app\" , \"message\" : \"string\" , \"domain-validation\" : [ { \"type\" : \"cname\" , \"name\" : \"test.example.com.\" , \"values\" : [ \"app.1cmycloud.com.\" ] } ] }"
+      ]
+    },
+    {
+      "slug": "applicationendpointvalidationrequest",
+      "title": "ApplicationEndpointValidationRequest",
+      "description": "Данные веб-адреса для проверки о возможности привязки",
+      "fields": [
+        "Доменное имя, которое будет привязано",
+        "HTTP-путь для доступа к приложению (может быть пустым)"
+      ],
+      "examples": [
+        "{ \"fqdn\" : \"test.example.com\" , \"context-path\" : \"/app\" }"
+      ]
+    },
+    {
+      "slug": "applicationprojectinfo",
+      "title": "ApplicationProjectInfo",
+      "description": "Информация о проекте приложения",
+      "fields": [
+        "Идентификатор проекта",
+        "Поставщик проекта",
+        "Версия проекта",
+        "Название проекта",
+        "Хэш",
+        "Дата последнего обновления приложения"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"developer\" : \"string\" , \"version\" : \"string\" , \"title\" : \"string\" , \"hash\" : \"string\" , \"date-updated\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "applicationrefdto",
+      "title": "ApplicationRefDto",
+      "description": "Приложение",
+      "fields": [
+        "Идентификатор ссылки",
+        "Название",
+        "URL"
+      ],
+      "examples": [
+        "{ \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"CRM-dev\" , \"url\" : \"http://127.0.0.1:9090/applications/CRM-dev\" }"
+      ]
+    },
+    {
+      "slug": "applicationscheduling",
+      "title": "ApplicationScheduling",
+      "description": "История размещения приложения на экземпляре технологии",
+      "fields": [
+        "Идентификатор экземпляра технологии",
+        "Имя экземпляра технологии",
+        "Версия технологии",
+        "Статус экземпляра технологии",
+        "Дата создания"
+      ],
+      "examples": [
+        "{ \"instance-id\" : \"string\" , \"name\" : \"string\" , \"technology-version\" : \"string\" , \"status\" : \"string\" , \"date-created\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "applicationspage",
+      "title": "ApplicationsPage",
+      "description": "Страница приложений",
+      "fields": [
+        "Общее число элементов",
+        "Общее число страниц",
+        "Является ли данная страница последней",
+        "Является ли данная страница первой",
+        "Размер страницы",
+        "Номер страницы",
+        "Число элементов в content",
+        "Содержимое страницы",
+        "Идентификатор приложения",
+        "Имя приложения",
+        "Отображаемое имя приложения",
+        "Описание приложения",
+        "Статус приложения",
+        "Флаг включения запланированных заданий",
+        "Флаг включения Шины",
+        "Флаг включения режима разработки",
+        "Флаг режима отладки",
+        "Проект, из которого должны создаваться приложения сервиса",
+        "Идентификатор проекта",
+        "Тип СУБД. Доступно только администраторам",
+        "Объект исходных данных (зарегистрированная версия проекта)",
+        "Идентификатор версии проекта",
+        "Имя проекта",
+        "Тип исходных данных",
+        "Идентификатор исходных данных в хранилище",
+        "Версия проекта",
+        "Полный путь до приложения",
+        "Идентификатор списка пользователей по умолчанию",
+        "Список идентификаторов подключаемых списков пользователей",
+        "Дата создания",
+        "Идентификатор пространства",
+        "Объект задачи, выполняющейся в данный момент",
+        "Идентификатор задачи",
+        "Статус задачи",
+        "Тип операции",
+        "Дата начала",
+        "Дата окончания",
+        "Объект конечной точки приложения",
+        "Идентификатор конечной точки",
+        "Полное доменное имя для приложения",
+        "Контекст публикации приложения",
+        "Флаг активности точки",
+        "Версия технологии",
+        "Текущая ошибка приложения, если она есть"
+      ],
+      "examples": [
+        "{ \"totalElements\" : 0 , \"totalPages\" : 0 , \"last\" : true , \"first\" : true , \"size\" : 0 , \"number\" : 0 , \"numberOfElements\" : 0 , \"content\" : [ { \"id\" : \"string\" , \"name\" : \"string\" , \"display-name\" : \"string\" , \"description\" : \"string\" , \"status\" : \"string\" , \"autostarting-scheduled-jobs\" : true , \"autostarting-esb\" : true , \"development-mode\" : true , \"debugging\" : true , \"project\" : { \"id\" : \"string\" } , \"dbms-type\" : \"File\" , \"source\" : { \"project-version-id\" : \"string\" , \"project-name\" : \"string\" , \"type\" : \"string\" , \"image-id\" : \"string\" , \"project-version\" : \"string\" } , \"uri\" : \"string\" , \"default-user-list\" : \"string\" , \"user-lists\" : [ { } ] , \"date-created\" : \"string\" , \"space-id\" : \"string\" , \"current-task\" : { \"id\" : \"string\" , \"status\" : \"string\" , \"operation-type\" : \"string\" , \"start-date\" : \"string\" , \"end-date\" : \"string\" } , \"endpoint\" : { \"id\" : \"string\" , \"fqdn\" : \"string\" , \"context-path\" : \"string\" , \"active\" : true } , \"technology-version\" : \"string\" , \"error\" : \"string\" } ] }"
+      ]
+    },
+    {
+      "slug": "applicationstatusresponse",
+      "title": "ApplicationStatusResponse",
+      "description": "Ответ о статусе приложения",
+      "fields": [
+        "Статус приложения",
+        "Текущая задача, выполняемая над приложением",
+        "Идентификатор задачи",
+        "Статус задачи",
+        "Тип операции",
+        "Дата начала",
+        "Дата окончания"
+      ],
+      "examples": [
+        "{ \"status\" : \"string\" , \"current-task\" : { \"id\" : \"string\" , \"status\" : \"string\" , \"operation-type\" : \"string\" , \"start-date\" : \"string\" , \"end-date\" : \"string\" } }"
+      ]
+    },
+    {
+      "slug": "applicationtask",
+      "title": "ApplicationTask",
+      "description": "Задача приложения",
+      "fields": [
+        "Идентификатор задачи",
+        "Статус задачи",
+        "Тип операции",
+        "Дата начала",
+        "Дата окончания",
+        "Идентификатор группы",
+        "Идентификатор приложения",
+        "Описание причин ошибки выполнения задачи"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"status\" : \"string\" , \"operation-type\" : \"string\" , \"start-date\" : \"string\" , \"end-date\" : \"string\" , \"group-id\" : \"string\" , \"application-id\" : \"string\" , \"error-message\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "applicationtechnologyversion",
+      "title": "ApplicationTechnologyVersion",
+      "description": "Версия технологии приложения",
+      "fields": [
+        "Версия технологии",
+        "Дата последнего обновления"
+      ],
+      "examples": [
+        "{ \"technology-version\" : \"string\" , \"date-updated\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "assemblydto",
+      "title": "AssemblyDto",
+      "description": "Информация о сборке",
+      "fields": [
+        "Идентификатор сборки",
+        "Версия сборки",
+        "Дата и время создания сборки",
+        "Идентификатор проекта",
+        "Имя проекта",
+        "Версия проекта",
+        "Поставщик проекта",
+        "Имя ветки",
+        "Хэш коммита",
+        "Комментарий к сборке",
+        "Признак того, был ли проект модифицирован относительно состояния, зафиксированного в системе контроля версий"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"assembly-version\" : \"string\" , \"created\" : \"string\" , \"project-id\" : \"string\" , \"project-name\" : \"string\" , \"project-version\" : \"string\" , \"project-developer\" : \"string\" , \"branch-name\" : \"string\" , \"commit-id\" : \"string\" , \"comment\" : \"string\" , \"modified\" : true }"
+      ]
+    },
+    {
+      "slug": "assemblyinfodto",
+      "title": "AssemblyInfoDto",
+      "description": "Краткая информация о сборке проекта",
+      "fields": [
+        "идентификатор сборки",
+        "тип сборки",
+        "версия сборки",
+        "статус сборки",
+        "дата создания сборки",
+        "количество приложений, созданных по данной сборки"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"image-type\" : \"string\" , \"version\" : \"string\" , \"status\" : \"string\" , \"date-created\" : \"string\" , \"application-count\" : 0 }"
+      ]
+    },
+    {
+      "slug": "branchdto",
+      "title": "BranchDto",
+      "description": "Ветка",
+      "fields": [
+        "Идентификатор ветки",
+        "Имя ветки",
+        "Вид ветки",
+        "Проект",
+        "Идентификатор ссылки",
+        "Название",
+        "Префикс",
+        "id или name ссылки (только для записи)",
+        "Репозиторий.",
+        "Ветка, в которую залит результат.",
+        "Идентификатор ссылки",
+        "Имя",
+        "Приложение",
+        "Идентификатор ссылки",
+        "Название",
+        "URL",
+        "Задача, по которой ведётся разработка ветки.",
+        "Идентификатор",
+        "Номер",
+        "Внешний url",
+        "Пометка удаления",
+        "Идентификатор версии объекта. Если заполнен в теле запроса изменения объекта, выполняется оптимистическая блокировка."
+      ],
+      "examples": [
+        "{ \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"issue/CRM-1\" , \"kind\" : \"development\" , \"project\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"Управление заказами\" , \"prefix\" : \"CRM\" } , \"repository\" : \"http://repositories/stash/scm/dt/crm.git\" , \"source-branch\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"issue/CRM-1\" , \"application\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"CRM-dev\" , \"url\" : \"http://127.0.0.1:9090/applications/CRM-dev\" } } , \"target-branch\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"issue/CRM-1\" , \"application\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"CRM-dev\" , \"url\" : \"http://127.0.0.1:9090/applications/CRM-dev\" } } , \"application\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"CRM-dev\" , \"url\" : \"http://127.0.0.1:9090/applications/CRM-dev\" } , \"issue\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"number\" : \"CRM-1\" , \"external-url\" : \"string\" } , \"deletion-mark\" : false , \"version-stamp\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" }"
+      ]
+    },
+    {
+      "slug": "branchrefdto",
+      "title": "BranchRefDto",
+      "description": "Идентификатор ссылки",
+      "fields": [
+        "Имя",
+        "Приложение",
+        "Идентификатор ссылки",
+        "Название",
+        "URL"
+      ],
+      "examples": [
+        "{ \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"issue/CRM-1\" , \"application\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"CRM-dev\" , \"url\" : \"http://127.0.0.1:9090/applications/CRM-dev\" } }"
+      ]
+    },
+    {
+      "slug": "branchresultdto",
+      "title": "BranchResultDto",
+      "description": "Атрибуты ветки",
+      "fields": [
+        "Идентификатор",
+        "Номер",
+        "Идентификатор версии объекта"
+      ],
+      "examples": [
+        "{ \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"issue/CRM-1\" , \"version-stamp\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" }"
+      ]
+    },
+    {
+      "slug": "canconnectuser",
+      "title": "CanConnectUser",
+      "description": "Возможность подключения пользователя",
+      "fields": [
+        "Флаг возможности подключения"
+      ],
+      "examples": [
+        "{ \"can-connect\" : true }"
+      ]
+    },
+    {
+      "slug": "catalogrefdto",
+      "title": "CatalogRefDto",
+      "description": "Идентификатор ссылки",
+      "fields": [
+        "Наименование"
+      ],
+      "examples": [
+        "{ \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "certificatedto",
+      "title": "CertificateDto",
+      "description": "Описание сертификата",
+      "fields": [
+        "Статус сертификата",
+        "Доменное имя, на которое был выпущен сертификат",
+        "Дата выпуска сертификата",
+        "Дата окончания действия сертификата",
+        "Идентификатор сертификата",
+        "Имя сертификата"
+      ],
+      "examples": [
+        "{ \"status\" : \"valid\" , \"fqdn\" : \"test.example.com\" , \"issued-on\" : \"2024-04-01T14:03:24\" , \"expires-on\" : \"2026-04-01T14:03:24\" , \"certificate-id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"certificate-name\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "certificatetypedto",
+      "title": "CertificateTypeDto",
+      "description": "Описание типа сертификата",
+      "fields": [
+        "Тип сертификата"
+      ],
+      "examples": [
+        "{ \"certificate-type\" : \"manual\" }"
+      ]
+    },
+    {
+      "slug": "changeapplicationspacerequest",
+      "title": "ChangeApplicationSpaceRequest",
+      "description": "Запрос на перенос приложения в другое пространство",
+      "fields": [
+        "Пространство, куда переносится приложение",
+        "Списки пользователей приложения, которые будут перенесены вместе с приложением"
+      ],
+      "examples": [
+        "{ \"space-id\" : \"string\" , \"user-lists\" : [ \"string\" ] }"
+      ]
+    },
+    {
+      "slug": "changeusertokenaccess",
+      "title": "ChangeUserTokenAccess",
+      "description": "Запрос изменение настроек доступа пользователя к HTTP сервисам приложения",
+      "fields": [
+        "Идентификатор списка пользователей",
+        "Идентификатор пользователя",
+        "Включен доступ к HTTP сервисам приложения"
+      ],
+      "examples": [
+        "{ \"user-list-id\" : \"string\" , \"user-id\" : \"string\" , \"enable-access\" : true }"
+      ]
+    },
+    {
+      "slug": "cloudservice",
+      "title": "CloudService",
+      "description": "Описание сервиса",
+      "fields": [
+        "Идентификатор проекта",
+        "Код сервиса",
+        "Название проекта",
+        "Публичное описание сервиса",
+        "Описание проекта",
+        "Идентификатор проекта",
+        "Название проекта",
+        "Включена ли самостоятельная регистрация абонентов",
+        "Дата создания сервиса"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"code\" : \"string\" , \"name\" : \"string\" , \"description\" : \"string\" , \"project\" : { \"id\" : \"string\" , \"name\" : \"string\" } , \"self-registration\" : true , \"date-created\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "cloudservicecreaterequest",
+      "title": "CloudServiceCreateRequest",
+      "description": "Тело запроса на создание сервиса",
+      "fields": [
+        "Код сервиса",
+        "Имя сервиса",
+        "Публичное описание сервиса",
+        "Идентификатор проекта",
+        "Название провайдера сервиса",
+        "Включена ли самостоятельная регистрация абонентов"
+      ],
+      "examples": [
+        "{ \"code\" : \"string\" , \"name\" : \"string\" , \"description\" : \"string\" , \"project\" : { \"id\" : \"string\" } , \"service-provider-name\" : \"string\" , \"self-registration\" : true }"
+      ]
+    },
+    {
+      "slug": "confirmation",
+      "title": "Confirmation",
+      "description": "Способ подтверждения пользователей",
+      "fields": [
+        "Тип способа подтверждения",
+        "Флаг использования данного способа подтверждения"
+      ],
+      "examples": [
+        "{ \"confirmation-type\" : \"string\" , \"enabled\" : true }"
+      ]
+    },
+    {
+      "slug": "connecteduseradminstate",
+      "title": "ConnectedUserAdminState",
+      "description": "Изменение статуса подключенного пользователя как администратора",
+      "fields": [
+        "Флаг состояния администратора"
+      ],
+      "examples": [
+        "{ \"is-admin\" : true }"
+      ]
+    },
+    {
+      "slug": "connecteduserinfo",
+      "title": "ConnectedUserInfo",
+      "description": "Информация о подключенном пользователе",
+      "fields": [
+        "Идентификатор списка пользователей",
+        "Идентификатор пользователя",
+        "Представление",
+        "Флаг состояния администратора",
+        "Флаг состояния доступа к HTTP сервисам приложения"
+      ],
+      "examples": [
+        "{ \"user-list-id\" : \"string\" , \"user-id\" : \"string\" , \"presentation\" : \"string\" , \"is-admin\" : true , \"token-access-enabled\" : true }"
+      ]
+    },
+    {
+      "slug": "connecteduserlists",
+      "title": "ConnectedUserLists",
+      "description": "Подключенные списки пользователей",
+      "fields": [
+        "Список идентификаторов подключаемых списков пользователей"
+      ],
+      "examples": [
+        "{ \"user-lists\" : [ \"string\" ] }"
+      ]
+    },
+    {
+      "slug": "connectuserrequest",
+      "title": "ConnectUserRequest",
+      "description": "Запрос на подключение пользователя к приложению",
+      "fields": [
+        "Идентификатор списка пользователей",
+        "Идентификатор пользователя",
+        "Представление"
+      ],
+      "examples": [
+        "{ \"user-list-id\" : \"string\" , \"user-id\" : \"string\" , \"presentation\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "createapplicationdumprequest",
+      "title": "CreateApplicationDumpRequest",
+      "description": "Запрос на создание дампа приложения",
+      "fields": [
+        "Флаг включения списков пользователей в дамп",
+        "Флаг включения двоичных данных в дамп",
+        "Флаг включения данных регистрации в системе взаимодействия в дамп",
+        "Описание"
+      ],
+      "examples": [
+        "{ \"include-users\" : true , \"include-binary-data\" : true , \"include-collaboration-registration-data\" : true , \"description\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "createapplicationendpoint",
+      "title": "CreateApplicationEndpoint",
+      "description": "Объект для добавления/изменения конечной точки приложения",
+      "fields": [
+        "Полное доменное имя для приложения",
+        "Контекст публикации приложения"
+      ],
+      "examples": [
+        "{ \"fqdn\" : \"string\" , \"context-path\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "createapplicationrequest",
+      "title": "CreateApplicationRequest",
+      "description": "Запрос на создание приложения",
+      "fields": [
+        "Объект исходных данных",
+        "Тип исходных данных",
+        "Идентификатор версии сборки проекта",
+        "Идентификатор проекта",
+        "Отображаемое имя приложения",
+        "Контекст публикации приложения",
+        "Флаг включения режима разработки",
+        "Версия технологии",
+        "Идентификатор списка пользователей по умолчанию",
+        "Список идентификаторов подключаемых списков пользователей",
+        "Идентификатор пространства",
+        "Доменное имя для приложения",
+        "Флаг включения запланированных заданий",
+        "Флаг включения Шины",
+        "Часовой пояс по умолчанию",
+        "Локаль по умолчанию",
+        "Тип СУБД",
+        "Описание приложения"
+      ],
+      "examples": [
+        "{ \"source\" : { \"type\" : \"repository\" , \"project-version-id\" : \"string\" , \"image-id\" : \"string\" } , \"display-name\" : \"string\" , \"publication-context\" : \"string\" , \"development-mode\" : true , \"technology-version\" : \"string\" , \"default-user-list\" : \"string\" , \"user-lists\" : [ \"string\" ] , \"space-id\" : \"string\" , \"domain-name\" : \"string\" , \"autostarting-scheduled-jobs\" : true , \"autostarting-esb\" : true , \"default-time-zone\" : \"string\" , \"default-locale\" : \"string\" , \"dbms-type\" : \"File\" , \"description\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "createprojectresponse",
+      "title": "CreateProjectResponse",
+      "description": "Ответ на запрос на создание проекта",
+      "fields": [
+        "версия сборки",
+        "идентификатор сборки",
+        "описание проекта",
+        "идентификатор проекта",
+        "идентификатор проекта из файла проекта",
+        "имя проекта"
+      ],
+      "examples": [
+        "{ \"name\" : 0 , \"image-id\" : \"string\" , \"artifact\" : { \"artifact-id\" : \"string\" , \"configuration-id\" : \"string\" , \"name\" : \"string\" } }"
+      ]
+    },
+    {
+      "slug": "createspacerequestdto",
+      "title": "CreateSpaceRequestDto",
+      "description": "Запрос на создание пространства",
+      "fields": [
+        "Имя пространства",
+        "Квота пользователей",
+        "Квота приложений",
+        "Флаг доступности создания списков пользователей"
+      ],
+      "examples": [
+        "{ \"name\" : \"string\" , \"applications-quota\" : 0 , \"users-quota\" : 0 , \"project-creation-allowed\" : true }"
+      ]
+    },
+    {
+      "slug": "dbmstypedto",
+      "title": "DbmsTypeDto",
+      "description": "Тип СУБД",
+      "fields": [
+        "Тип"
+      ],
+      "examples": [
+        "{ \"type\" : \"File\" }"
+      ]
+    },
+    {
+      "slug": "dbmstypesdto",
+      "title": "DbmsTypesDto",
+      "description": "Список типов СУБД",
+      "fields": [
+        "Тип"
+      ],
+      "examples": [
+        "[ { \"type\" : \"File\" } ]"
+      ]
+    },
+    {
+      "slug": "errordata",
+      "title": "ErrorData",
+      "description": "Код ошибки",
+      "fields": [
+        "Статус ошибки",
+        "Сообщение ошибки",
+        "Детали ошибки"
+      ],
+      "examples": [
+        "{ \"code\" : 0 , \"status\" : \"string\" , \"message\" : \"string\" , \"details\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "esiaaccount",
+      "title": "EsiaAccount",
+      "description": "Учетная запись ЕСИА",
+      "fields": [
+        "Идентификатор ЕСИА пользователя",
+        "Номер телефона пользователя",
+        "ИНН пользователя",
+        "Локальный идентификатор сервиса учетных записей",
+        "СНИЛС пользователя",
+        "Адрес электронной почты пользователя"
+      ],
+      "examples": [
+        "{ \"esia-id\" : \"string\" , \"phone\" : \"string\" , \"inn\" : \"string\" , \"account-service-local-id\" : \"string\" , \"snils\" : \"string\" , \"email\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "getapplicationresponse",
+      "title": "GetApplicationResponse",
+      "description": "Ответ на запрос на получение данных о приложении",
+      "fields": [
+        "Идентификатор приложения",
+        "Имя приложения",
+        "Отображаемое имя приложения",
+        "Описание приложения",
+        "Статус приложения",
+        "Флаг включения запланированных заданий",
+        "Флаг включения Шины",
+        "Флаг включения режима разработки",
+        "Флаг режима отладки",
+        "Проект, из которого должны создаваться приложения сервиса",
+        "Идентификатор проекта",
+        "Тип СУБД. Доступно только администраторам",
+        "Объект исходных данных (зарегистрированная версия проекта)",
+        "Идентификатор версии проекта",
+        "Имя проекта",
+        "Тип исходных данных",
+        "Идентификатор исходных данных в хранилище",
+        "Версия проекта",
+        "Полный путь до приложения",
+        "Идентификатор списка пользователей по умолчанию",
+        "Список идентификаторов подключаемых списков пользователей",
+        "Дата создания",
+        "Идентификатор пространства",
+        "Объект задачи, выполняющейся в данный момент",
+        "Идентификатор задачи",
+        "Статус задачи",
+        "Тип операции",
+        "Дата начала",
+        "Дата окончания",
+        "Объект конечной точки приложения",
+        "Идентификатор конечной точки",
+        "Полное доменное имя для приложения",
+        "Контекст публикации приложения",
+        "Флаг активности точки",
+        "Версия технологии",
+        "Текущая ошибка приложения, если она есть"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"name\" : \"string\" , \"display-name\" : \"string\" , \"description\" : \"string\" , \"status\" : \"string\" , \"autostarting-scheduled-jobs\" : true , \"autostarting-esb\" : true , \"development-mode\" : true , \"debugging\" : true , \"project\" : { \"id\" : \"string\" } , \"dbms-type\" : \"File\" , \"source\" : { \"project-version-id\" : \"string\" , \"project-name\" : \"string\" , \"type\" : \"string\" , \"image-id\" : \"string\" , \"project-version\" : \"string\" } , \"uri\" : \"string\" , \"default-user-list\" : \"string\" , \"user-lists\" : [ { } ] , \"date-created\" : \"string\" , \"space-id\" : \"string\" , \"current-task\" : { \"id\" : \"string\" , \"status\" : \"string\" , \"operation-type\" : \"string\" , \"start-date\" : \"string\" , \"end-date\" : \"string\" } , \"endpoint\" : { \"id\" : \"string\" , \"fqdn\" : \"string\" , \"context-path\" : \"string\" , \"active\" : true } , \"technology-version\" : \"string\" , \"error\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "grouptaskdto",
+      "title": "GroupTaskDto",
+      "description": "Групповая задача",
+      "fields": [
+        "Идентификатор задачи",
+        "Тип групповой задачи",
+        "Дата создания",
+        "Кем создана",
+        "Флаг завершения с ошибкой при наличии хотя бы одной ошибки",
+        "Количество завершенных задач в рамках группы",
+        "Количество отмененных задач в рамках группы",
+        "Общее количество задач в рамках группы",
+        "Статус задачи",
+        "Описание причин ошибки выполнения задачи",
+        "Список задач в рамках группы",
+        "Идентификатор задачи",
+        "Статус задачи",
+        "Тип операции",
+        "Дата начала",
+        "Дата окончания",
+        "Идентификатор группы"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"type\" : \"string\" , \"date-created\" : \"string\" , \"created-by\" : \"string\" , \"any-failure\" : \"string\" , \"completed-count\" : \"string\" , \"cancelled-count\" : \"string\" , \"total-count\" : \"string\" , \"status\" : \"string\" , \"error-message\" : \"string\" , \"tasks\" : [ { \"id\" : \"string\" , \"status\" : \"string\" , \"operation-type\" : \"string\" , \"start-date\" : \"string\" , \"end-date\" : \"string\" , \"group-id\" : \"string\" } ] }"
+      ]
+    },
+    {
+      "slug": "groupupdateapplicationsprojectrequest",
+      "title": "GroupUpdateApplicationsProjectRequest",
+      "description": "Объект создания групповой задачи обновления версии проекта приложений",
+      "fields": [
+        "Флаг обновления версии технологии при необходимости",
+        "Объект исходных данных (зарегистрированная сборка проекта)",
+        "Идентификатор сборки проекта",
+        "Список идентификаторов приложений"
+      ],
+      "examples": [
+        "{ \"optional-technology-update\" : true , \"source\" : { \"image-id\" : \"string\" } , \"applications\" : [ \"string\" ] }"
+      ]
+    },
+    {
+      "slug": "groupupdateapplicationstechnologyrequest",
+      "title": "GroupUpdateApplicationsTechnologyRequest",
+      "description": "Объект создания групповой задачи обновления версии технологии приложений",
+      "fields": [
+        "Целевая версия технологии (UpdateApplicationTechnologyVersion)",
+        "Список идентификаторов приложений"
+      ],
+      "examples": [
+        "{ \"technology-version\" : \"string\" , \"applications\" : [ \"string\" ] }"
+      ]
+    },
+    {
+      "slug": "idornamestring",
+      "title": "IdOrNameString",
+      "description": "id или name ссылки (только для записи)",
+      "fields": [],
+      "examples": [
+        "null"
+      ]
+    },
+    {
+      "slug": "issuedto",
+      "title": "IssueDto",
+      "description": "Задача",
+      "fields": [
+        "Идентификатор задачи",
+        "Номер задачи. Обеспечивает контроль уникальности в пределах проекта. Если не указан при загрузке, то заполняется внутренним кодом.",
+        "Название задачи",
+        "Проект",
+        "Идентификатор ссылки",
+        "Название",
+        "Префикс",
+        "id или name ссылки (только для записи)",
+        "Внешний идентификатор задачи для гиперссылки. Полный URL или часть (UUID) для подстановки в шаблон.",
+        "Статус задачи",
+        "Описание задачи. В формате HTML. При превышении 500 символов в свойствах задачи не выгружается (пустое значение и description-is-too-large: true). Требуется отдельная подгрузка (из .../issues/{key}/description), аналогично вложениям.",
+        "Признак превышения объема description.",
+        "Дата создания. Для выгрузки: можно изменить формат в настройках групповой разработки для проекта. По умолчанию — в универсальном формате с часовым поясом. Для загрузки: принимаются основные форматы по ISO-8601. Если в значении не указан часовой пояс, он берется из настроек групповой разработки проекта.",
+        "Дата завершения (выполнения, закрытия, удаления). Формат аналогичен \"created\".",
+        "Дата последнего обновления из внешней системы. Формат аналогичен \"created\".",
+        "Дата загрузки задачи из внешней системы. Для созданных локально — пустое значение. Формат аналогичен \"created\".",
+        "Создатель задачи",
+        "Идентификатор ссылки",
+        "Имя",
+        "id или name ссылки (только для записи)",
+        "Исполнитель задачи",
+        "Идентификатор ссылки",
+        "Имя",
+        "id или name ссылки (только для записи)",
+        "Релиз, в который включена задача",
+        "Идентификатор ссылки",
+        "Наименование",
+        "id или name ссылки (только для записи)",
+        "Релизная или основная ветка для заливки результата",
+        "Идентификатор ссылки",
+        "Имя",
+        "Приложение",
+        "Идентификатор ссылки",
+        "Название",
+        "URL",
+        "id или name ссылки (только для записи)",
+        "Режим выбора ветки разработки",
+        "Ветки",
+        "Идентификатор ссылки",
+        "Имя",
+        "Приложение",
+        "Идентификатор ссылки",
+        "Название",
+        "URL",
+        "Вложения (прикрепленные файлы). В свойствах задачи выгружается только описание. Само тело файла необходимо передавать отдельно (.../issues/{key}/attachment). Вместо тела файла можно заполнить URL ресурса для гиперссылки из формы задачи.",
+        "Имя файла",
+        "Строковое представление размера",
+        "URL адрес для открытия по гиперссылке",
+        "Метки (тэги)",
+        "Проверяющие задачи",
+        "Идентификатор ссылки",
+        "Имя",
+        "Результат проверки",
+        "Пометка удаления",
+        "Идентификатор версии объекта. Если заполнено в теле запроса изменения объекта - выполняется оптимистическая блокировка.",
+        "Отметка времени изменения объекта (при использовании настройки регистрации изменений для задач). Если заполнено в теле запроса изменения объекта - выполняется оптимистическая блокировка."
+      ],
+      "examples": [
+        "{ \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"number\" : \"CRM-1\" , \"title\" : \"Разработать API для задач\" , \"project\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"Управление заказами\" , \"prefix\" : \"CRM\" } , \"external-url\" : \"http://1Cbase/issue/CRM-1\" , \"status\" : \"in-progress\" , \"description\" : \"<body><p>Текст описания</p></body>\" , \"description-is-too-large\" : false , \"created\" : \"2025-01-02T10:11:12.345Z | 2025-01-02T10:11:12Z | 2025-01-02 10:11:12+03:00 | 2025-01-02 10:11:12\" , \"completed\" : \"2025-01-02T10:11:12.345Z\" , \"updated\" : \"2025-01-02T10:11:12.345Z\" , \"imported\" : \"2025-01-02T10:11:12.345Z\" , \"author\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"Масков И.Р.\" } , \"assignee\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"Масков И.Р.\" } , \"release\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"string\" } , \"target-branch\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"issue/CRM-1\" , \"application\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"CRM-dev\" , \"url\" : \"http://127.0.0.1:9090/applications/CRM-dev\" } } , \"branch-usage\" : \"create-new-branch\" , \"branches\" : [ { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"issue/CRM-1\" , \"application\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"CRM-dev\" , \"url\" : \"http://127.0.0.1:9090/applications/CRM-dev\" } } ] , \"attachments\" : [ { \"name\" : \"Скриншот.jpg\" , \"size\" : \"100,5 КБ\" , \"url\" : \"http://1Cbase/files/0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" } ] , \"labels\" : [ \"Блок Контрагенты\" ] , \"reviewers\" : [ { \"user\" : { \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"Масков И.Р.\" } , \"state\" : \"approved\" } ] , \"deletion-mark\" : false , \"version-stamp\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"time-stamp\" : \"2025-01-02T10:11:12.345Z\" }"
+      ]
+    },
+    {
+      "slug": "issueresultdto",
+      "title": "IssueResultDto",
+      "description": "Атрибуты задачи",
+      "fields": [
+        "Идентификатор",
+        "Номер",
+        "Идентификатор версии объекта"
+      ],
+      "examples": [
+        "{ \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"number\" : \"CRM-1\" , \"version-stamp\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" }"
+      ]
+    },
+    {
+      "slug": "lightuserlist",
+      "title": "LightUserList",
+      "description": "Облегченный объект UserList",
+      "fields": [
+        "Идентификатор списка пользователей",
+        "Представление (название) списка пользователей",
+        "Идентификатор пространства, к которому принадлежит список пользователей"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"presentation\" : \"string\" , \"space-id\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "paas",
+      "title": "PaaS",
+      "description": "Описание сервиса PaaS",
+      "fields": [
+        "Код сервиса PaaS",
+        "Имя сервиса",
+        "Публичное описание сервиса",
+        "Включена ли самостоятельная регистрация абонентов"
+      ],
+      "examples": [
+        "{ \"code\" : \"string\" , \"name\" : \"string\" , \"description\" : \"string\" , \"self-registration\" : true }"
+      ]
+    },
+    {
+      "slug": "pageproperties",
+      "title": "PageProperties",
+      "description": "Свойства страницы",
+      "fields": [
+        "Общее число элементов",
+        "Общее число страниц",
+        "Является ли данная страница последней",
+        "Является ли данная страница первой",
+        "Размер страницы",
+        "Номер страницы",
+        "Число элементов в content"
+      ],
+      "examples": [
+        "{ \"totalElements\" : 0 , \"totalPages\" : 0 , \"last\" : true , \"first\" : true , \"size\" : 0 , \"number\" : 0 , \"numberOfElements\" : 0 }"
+      ]
+    },
+    {
+      "slug": "passwordpolicy",
+      "title": "PasswordPolicy",
+      "description": "Политика паролей",
+      "fields": [
+        "Минимальное количество символов в пароле",
+        "Максимальное количество символов в пароле",
+        "Флаг необходимости содержания символа в нижнем регистре",
+        "Флаг необходимости содержания символа в верхнем регистре",
+        "Пароль должен содержать хотя бы один символ из приведенной строки (если строка пустая – правило не применяется)",
+        "Пароль должен содержать символы только из приведенной строки (если строка пустая – правило не учитывается",
+        "Пароль должен содержать цифру",
+        "Пароль не должен совпадать с определенным количеством последних используемых паролей"
+      ],
+      "examples": [
+        "{ \"min-length\" : 0 , \"max-length\" : 0 , \"must-contain-lower-case\" : true , \"must-contain-upper-case\" : true , \"must-contain-symbol\" : \"string\" , \"allowed-alphabet\" : \"string\" , \"must-contain-digit\" : true , \"prohibit-previous-passwords\" : 0 }"
+      ]
+    },
+    {
+      "slug": "platforminstancetask",
+      "title": "PlatformInstanceTask",
+      "description": "Задача экземпляра технологии",
+      "fields": [
+        "Идентификатор задачи",
+        "Статус задачи",
+        "Тип операции",
+        "Дата начала",
+        "Дата окончания",
+        "Идентификатор группы",
+        "Описание причин ошибки выполнения задачи"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"status\" : \"string\" , \"operation-type\" : \"string\" , \"start-date\" : \"string\" , \"end-date\" : \"string\" , \"group-id\" : \"string\" , \"error-message\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "projectdto",
+      "title": "ProjectDto",
+      "description": "Ответ на запрос на получение данных о проекте",
+      "fields": [
+        "идентификатор проекта",
+        "идентификатор пространства",
+        "идентификатор родительского проекта поставщика",
+        "идентификатор родительской группы проектов",
+        "имя проекта",
+        "сборка по умолчанию данного проекта",
+        "идентификатор сборки",
+        "тип сборки",
+        "версия сборки",
+        "статус сборки",
+        "дата создания сборки",
+        "количество приложений, созданных по данной сборки",
+        "признак, что проект удален",
+        "количество приложений, созданных по сборкам данного проекта",
+        "код проекта",
+        "дата создания проекта",
+        "описание проекта",
+        "вид проекта"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"space-id\" : \"string\" , \"parent-id\" : \"string\" , \"group-id\" : \"string\" , \"name\" : \"string\" , \"default-image\" : { \"id\" : \"string\" , \"image-type\" : \"string\" , \"version\" : \"string\" , \"status\" : \"string\" , \"date-created\" : \"string\" , \"application-count\" : 0 } , \"deleted\" : true , \"application-count\" : 0 , \"code\" : \"string\" , \"date-created\" : \"string\" , \"description\" : \"string\" , \"project-kind\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "projectrefdto",
+      "title": "ProjectRefDto",
+      "description": "Идентификатор ссылки",
+      "fields": [
+        "Название",
+        "Префикс"
+      ],
+      "examples": [
+        "{ \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"Управление заказами\" , \"prefix\" : \"CRM\" }"
+      ]
+    },
+    {
+      "slug": "secondfactorauthentication",
+      "title": "SecondFactorAuthentication",
+      "description": "Настройки двухфакторной аутентификации пользователя",
+      "fields": [
+        "Список приоритетов",
+        "Тип фактора (alias — factorType)",
+        "Список параметров",
+        "Использовать всегда"
+      ],
+      "examples": [
+        "{ \"priority-list\" : [ { \"type\" : \"string\" , \"params\" : { } } ] , \"use-always\" : true }"
+      ]
+    },
+    {
+      "slug": "selfregistration",
+      "title": "SelfRegistration",
+      "description": "Самостоятельная регистрация",
+      "fields": [
+        "Флаг использования самостоятельной регистрации",
+        "Флаг необходимости иметь подтвержденный телефон (если у пользователя не подтвержден телефон, то он не сможет войти в приложение)",
+        "Флаг необходимости иметь подтвержденный email (если у пользователя не подтвержден email, то он не сможет войти в приложение)"
+      ],
+      "examples": [
+        "{ \"enabled\" : true , \"phone-required\" : true , \"email-required\" : true }"
+      ]
+    },
+    {
+      "slug": "smsgateway",
+      "title": "SmsGateway",
+      "description": "СМС-шлюз",
+      "fields": [
+        "url сервиса для отправки СМС",
+        "Идентификатор шлюза",
+        "Идентификатор приложения"
+      ],
+      "examples": [
+        "{ \"url\" : \"string\" , \"id\" : \"string\" , \"application-id\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "smtpgateway",
+      "title": "SmtpGateway",
+      "description": "Почтовый шлюз",
+      "fields": [
+        "Идентификатор шлюза",
+        "Пользователь",
+        "Пароль",
+        "Флаг использования SSL",
+        "Флаг использования STARTTLS",
+        "Домен сервера",
+        "Адрес отправителя письма",
+        "Имя владельца адреса",
+        "Порт"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"user\" : \"string\" , \"password\" : \"string\" , \"use-ssl\" : true , \"allow-start-tls\" : true , \"server\" : \"string\" , \"sender-address\" : \"string\" , \"sender-name\" : \"string\" , \"port\" : 0 }"
+      ]
+    },
+    {
+      "slug": "space",
+      "title": "Space",
+      "description": "Пространство",
+      "fields": [
+        "Идентификатор пространства",
+        "Владелец пространства",
+        "Имя пространства",
+        "Дата создания",
+        "Количество приложений",
+        "Количество проектов",
+        "Количество списков пользователей",
+        "Квота пользователей",
+        "Квота пользователей",
+        "Флаг доступности создания списков пользователей"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"owner\" : \"string\" , \"name\" : \"string\" , \"date-created\" : \"string\" , \"applications-count\" : 0 , \"projects-count\" : 0 , \"user-lists-count\" : 0 , \"applications-quota\" : 0 , \"users-quota\" : 0 , \"project-creation-allowed\" : true }"
+      ]
+    },
+    {
+      "slug": "spaceapplicationdto",
+      "title": "SpaceApplicationDto",
+      "description": "Приложение в рамках пространства",
+      "fields": [
+        "Идентификатор приложения"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "spaceavailableformoveresponse",
+      "title": "SpaceAvailableForMoveResponse",
+      "description": "Информация о пространстве, куда возможен перенос пространства",
+      "fields": [
+        "Идентификатор пространства",
+        "Название пространства",
+        "Информация о том, что произойдёт с проектом приложения при переносе приложения в данное пространство"
+      ],
+      "examples": [
+        "{ \"space-id\" : \"string\" , \"name\" : \"string\" , \"description\" : \"При переносе приложения в данное пространство, проект не будет перемещен, так как принадлежит другому пространству\" }"
+      ]
+    },
+    {
+      "slug": "spaceparticipantdto",
+      "title": "SpaceParticipantDto",
+      "description": "Участник пространства",
+      "fields": [
+        "Идентификатор пользователя",
+        "Идентификатор списка пользователей",
+        "Роль пользователя в пространстве",
+        "Имя пользователя",
+        "Логин пользователя",
+        "Номер телефона пользователя",
+        "Электронная почта пользователя"
+      ],
+      "examples": [
+        "{ \"user-id\" : \"string\" , \"user-list-id\" : \"string\" , \"role\" : \"Владелец\" , \"name\" : \"string\" , \"login\" : \"string\" , \"phone\" : \"string\" , \"email\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "spaceprojectdto",
+      "title": "SpaceProjectDto",
+      "description": "Проект в рамках пространства",
+      "fields": [
+        "Идентификатор проекта"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "spacespage",
+      "title": "SpacesPage",
+      "description": "Страница пространств",
+      "fields": [
+        "Общее число элементов",
+        "Общее число страниц",
+        "Является ли данная страница последней",
+        "Является ли данная страница первой",
+        "Размер страницы",
+        "Номер страницы",
+        "Число элементов в content",
+        "Содержимое страницы",
+        "Идентификатор пространства",
+        "Владелец пространства",
+        "Имя пространства",
+        "Дата создания",
+        "Количество приложений",
+        "Количество проектов",
+        "Количество списков пользователей",
+        "Квота пользователей",
+        "Квота пользователей",
+        "Флаг доступности создания списков пользователей"
+      ],
+      "examples": [
+        "{ \"totalElements\" : 0 , \"totalPages\" : 0 , \"last\" : true , \"first\" : true , \"size\" : 0 , \"number\" : 0 , \"numberOfElements\" : 0 , \"content\" : [ { \"id\" : \"string\" , \"owner\" : \"string\" , \"name\" : \"string\" , \"date-created\" : \"string\" , \"applications-count\" : 0 , \"projects-count\" : 0 , \"user-lists-count\" : 0 , \"applications-quota\" : 0 , \"users-quota\" : 0 , \"project-creation-allowed\" : true } ] }"
+      ]
+    },
+    {
+      "slug": "spaceuserlistdto",
+      "title": "SpaceUserListDto",
+      "description": "Список пользователей в рамках пространства",
+      "fields": [
+        "Идентификатор списка пользователей"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "subscriber",
+      "title": "Subscriber",
+      "description": "Описание абонента сервиса",
+      "fields": [
+        "Идентификатор абонента",
+        "Код абонента",
+        "Название абонента",
+        "Вид абонента",
+        "Дата подключения абонента к сервису"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"code\" : \"string\" , \"name\" : \"string\" , \"subscriber-kind\" : \"string\" , \"connection-date\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "subscriberapplication",
+      "title": "SubscriberApplication",
+      "description": "Описание приложения абонента",
+      "fields": [
+        "Описание проекта",
+        "Идентификатор проекта",
+        "Название проекта",
+        "Имя приложения",
+        "Идентификатор приложения",
+        "Статус приложения",
+        "Полный путь до приложения",
+        "Идентификатор пространства",
+        "Версия технологии"
+      ],
+      "examples": [
+        "{ \"project\" : { \"id\" : \"string\" , \"name\" : \"string\" } , \"application-name\" : \"string\" , \"application-id\" : \"string\" , \"status\" : \"string\" , \"url\" : \"string\" , \"space-id\" : \"string\" , \"technology-version\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "subscribercreaterequest",
+      "title": "SubscriberCreateRequest",
+      "description": "Запрос на создание абонента сервиса",
+      "fields": [
+        "Код абонента",
+        "Название абонента",
+        "Вид абонента",
+        "Имя владельца абонента",
+        "Email владельца абонента",
+        "Название пространства абонента"
+      ],
+      "examples": [
+        "{ \"code\" : \"string\" , \"name\" : \"string\" , \"subscriber-kind\" : \"string\" , \"owner-name\" : \"string\" , \"owner-email\" : \"string\" , \"space-name\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "subscriberspace",
+      "title": "SubscriberSpace",
+      "description": "Описание пространства абонента",
+      "fields": [
+        "ID пространства",
+        "Название пространства",
+        "Дата создания пространства",
+        "Роль абонента в пространстве",
+        "Квота пользователей",
+        "Квота приложений",
+        "Количество приложений"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"name\" : \"string\" , \"date-created\" : \"string\" , \"participation-type\" : \"string\" , \"users-quota\" : 0 , \"applications-quota\" : 0 , \"applications-count\" : 0 }"
+      ]
+    },
+    {
+      "slug": "subscriberuser",
+      "title": "SubscriberUser",
+      "description": "Описание пользователя абонента",
+      "fields": [
+        "Имя пользователя",
+        "Идентификатор пользователя",
+        "Идентификатор списка пользователей",
+        "Роль пользователя (\"Administrator\"/\"Owner\")"
+      ],
+      "examples": [
+        "{ \"user-name\" : \"string\" , \"user-id\" : \"string\" , \"user-list-id\" : \"string\" , \"participation-type\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "subscriberuserconnectrequest",
+      "title": "SubscriberUserConnectRequest",
+      "description": "Запрос на подключение пользователя к абоненту",
+      "fields": [
+        "Роль пользователя (\"Administrator\"/\"Owner\")",
+        "Идентификатор пользователя",
+        "Идентификатор списка пользователей"
+      ],
+      "examples": [
+        "{ \"participation-type\" : \"string\" , \"user-id\" : \"string\" , \"user-list-id\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "subscriberuserdisconnectrequest",
+      "title": "SubscriberUserDisconnectRequest",
+      "description": "Запрос на отключение пользователя от абонента",
+      "fields": [
+        "Идентификатор пользователя",
+        "Идентификатор списка пользователей"
+      ],
+      "examples": [
+        "{ \"user-id\" : \"string\" , \"user-list-id\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "updateapplicationtechnologyversion",
+      "title": "UpdateApplicationTechnologyVersion",
+      "description": "Объект для обновления версии технологии приложения",
+      "fields": [
+        "Версия технологии"
+      ],
+      "examples": [
+        "{ \"technology-version\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "updateprojectdto",
+      "title": "UpdateProjectDto",
+      "description": "Запрос обновления приложения на указанную версию сборки проекта",
+      "fields": [
+        "Объект исходных данных (зарегистрированная версия проекта)",
+        "Тип исходных данных",
+        "Идентификатор проекта",
+        "Версия сборки",
+        "Идентификатор сборки"
+      ],
+      "examples": [
+        "{ \"source\" : { \"type\" : \"repository\" , \"project-id\" : \"string\" , \"assembly-version\" : \"string\" , \"image-id\" : \"string\" } }"
+      ]
+    },
+    {
+      "slug": "uploadcertificatedto",
+      "title": "UploadCertificateDto",
+      "description": "Описание данных по загрузке сертификата",
+      "fields": [
+        "Содержимое сертификата",
+        "Содержимое закрытого ключа",
+        "Содержимое промежуточных сертификатов"
+      ],
+      "examples": [
+        "{ \"certificate\" : \"-----BEGIN CERTIFICATE-----\\nMIIEfTCCA2WgAwIBdgIJAMYCyyRg7b6iMA0GCSqGSIb3DQEBCwUAMG8xFTATBgNV\\nBAMMDDHQoTrQm9C49L3QujEdMBsGA1UECgwU0J7QntCeIMKr0J3Qn0CmIDFDwrsx\\n-----END CERTIFICATE-----\" , \"private-key\" : \"-----BEGIN RSA PRIVATE KEY-----\\nMIIEpAIBAAKCAQEAxwVMNqjdqqdfEuKsIbRroGLcgMWS/Q0rTBoN0A1qKY8dc2VL\\nuL4v/Nexy8/fzPAKeHzyXvKAX/ecYwonjepvzh1BxyKVsg8pl90fUHemKBbwHfVL\\n-----END RSA PRIVATE KEY-----\" , \"intermediate-ca\" : \"string\" }"
+      ]
+    },
+    {
+      "slug": "user",
+      "title": "User",
+      "description": "Пользователь",
+      "fields": [
+        "Список учетных записей",
+        "Идентификатор учетной записи",
+        "Идентификатор сервиса учетных записей",
+        "Локальный идентификатор сервиса учетных записей",
+        "Тип сервиса учетных записей",
+        "Флаг подтверждения телефона",
+        "Настройки двухфакторной аутентификации пользователя",
+        "Список приоритетов",
+        "Тип фактора (alias — factorType)",
+        "Список параметров",
+        "Использовать всегда",
+        "Идентификатор списка пользователя, к которому принадлежит пользователь",
+        "Логин пользователя",
+        "Представление (имя) пользователя",
+        "Строка",
+        "Идентификатор пользователя",
+        "Флаг подтверждения электронной почты",
+        "Флаг активности пользователя",
+        "Строка",
+        "Массив токенов доступа пользователя",
+        "Идентификатор клиента",
+        "Секрет клиента",
+        "Описание токена доступа",
+        "учетная запись ЕСИА пользователя",
+        "Идентификатор ЕСИА пользователя",
+        "Номер телефона пользователя",
+        "ИНН пользователя",
+        "Локальный идентификатор сервиса учетных записей",
+        "СНИЛС пользователя",
+        "Адрес электронной почты пользователя"
+      ],
+      "examples": [
+        "{ \"accounts\" : [ { \"account-id\" : \"string\" , \"account-service-id\" : \"string\" , \"account-service-local-id\" : \"string\" , \"account-service-type\" : \"string\" } ] , \"phone-confirmed\" : true , \"second-factor-authentication\" : { \"priority-list\" : [ { \"type\" : \"string\" , \"params\" : { } } ] , \"use-always\" : true } , \"user-list-id\" : \"string\" , \"login\" : \"string\" , \"presentation\" : \"string\" , \"phone\" : \"string\" , \"id\" : \"string\" , \"email-confirmed\" : true , \"is-active\" : true , \"email\" : \"string\" , \"access-tokens\" : [ { \"client-id\" : \"string\" , \"client-secret\" : \"string\" , \"description\" : \"string\" } ] , \"esia-account\" : [ { \"esia-id\" : \"string\" , \"phone\" : \"string\" , \"inn\" : \"string\" , \"account-service-local-id\" : \"string\" , \"snils\" : \"string\" , \"email\" : \"string\" } ] }"
+      ]
+    },
+    {
+      "slug": "userlist",
+      "title": "UserList",
+      "description": "Список пользователей",
+      "fields": [
+        "Идентификатор списка пользователей",
+        "Идентификатор пространства, к которому принадлежит список пользователей",
+        "Представление (название) списка пользователей",
+        "Самостоятельная регистрация",
+        "Флаг использования самостоятельной регистрации",
+        "Флаг необходимости иметь подтвержденный телефон (если у пользователя не подтвержден телефон, то он не сможет войти в приложение)",
+        "Флаг необходимости иметь подтвержденный email (если у пользователя не подтвержден email, то он не сможет войти в приложение)",
+        "Список способов подтверждения пользователей",
+        "Тип способа подтверждения",
+        "Флаг использования данного способа подтверждения",
+        "Флаг использования политики паролей",
+        "Политика паролей",
+        "Минимальное количество символов в пароле",
+        "Максимальное количество символов в пароле",
+        "Флаг необходимости содержания символа в нижнем регистре",
+        "Флаг необходимости содержания символа в верхнем регистре",
+        "Пароль должен содержать хотя бы один символ из приведенной строки (если строка пустая – правило не применяется)",
+        "Пароль должен содержать символы только из приведенной строки (если строка пустая – правило не учитывается",
+        "Пароль должен содержать цифру",
+        "Пароль не должен совпадать с определенным количеством последних используемых паролей",
+        "Массив почтовых шлюзов",
+        "Идентификатор шлюза",
+        "Пользователь",
+        "Пароль",
+        "Флаг использования SSL",
+        "Флаг использования STARTTLS",
+        "Домен сервера",
+        "Адрес отправителя письма",
+        "Имя владельца адреса",
+        "Порт",
+        "Массив настроек сервисов учетных записей",
+        "Флаг использования сервиса внешних учетных записей",
+        "Дополнительные настройки в виде \"ключ — значение\"",
+        "Ключ",
+        "Локальный идентификатор сервиса внешних учетных записей",
+        "Идентификатор сервиса внешних учетных записей",
+        "Тип сервиса внешних учетных записей (может иметь значения Local, Cas, ActiveDirectory, Esia, OAuth2)",
+        "Флаг создания нового пользователя в случае, когда была совершена успешная аутентификация",
+        "Правила вычисления свойств пользователя из ответа сервиса учетных записей",
+        "Формат ответа сервиса с информацией о пользователе (Json/Xml)",
+        "Правило вычисления представления пользователя (в формате JsonPath/XPath)",
+        "Правило вычисления телефона пользователя (в формате JsonPath/XPath)",
+        "Правило вычисления почты пользователя (в формате JsonPath/XPath)",
+        "Массив смс шлюзов",
+        "url сервиса для отправки СМС",
+        "Идентификатор шлюза",
+        "Идентификатор приложения",
+        "Флаг включения персональных данных в смс и email"
+      ],
+      "examples": [
+        "{ \"id\" : \"string\" , \"space-id\" : \"string\" , \"presentation\" : \"string\" , \"self-registration\" : { \"enabled\" : true , \"phone-required\" : true , \"email-required\" : true } , \"confirmations\" : [ { \"confirmation-type\" : \"string\" , \"enabled\" : true } ] , \"password-policy-enabled\" : true , \"password-policy\" : { \"min-length\" : 0 , \"max-length\" : 0 , \"must-contain-lower-case\" : true , \"must-contain-upper-case\" : true , \"must-contain-symbol\" : \"string\" , \"allowed-alphabet\" : \"string\" , \"must-contain-digit\" : true , \"prohibit-previous-passwords\" : 0 } , \"smtp-gateways\" : [ { \"id\" : \"string\" , \"user\" : \"string\" , \"password\" : \"string\" , \"use-ssl\" : true , \"allow-start-tls\" : true , \"server\" : \"string\" , \"sender-address\" : \"string\" , \"sender-name\" : \"string\" , \"port\" : 0 } ] , \"account-services-settings\" : [ { \"enabled\" : true , \"additional-settings\" : { \"key\" : \"string\" } , \"local-id\" : \"string\" , \"account-service-id\" : \"string\" , \"account-service-type\" : \"Local\" , \"create-user-on-auth\" : true , \"calculation-rules\" : { \"response-kind\" : \"string\" , \"presentation-rule\" : \"string\" , \"phone-rule\" : \"string\" , \"email-rule\" : \"string\" } } ] , \"sms-gateways\" : [ { \"url\" : \"string\" , \"id\" : \"string\" , \"application-id\" : \"string\" } ] , \"include-personal-data-in-messages\" : true }"
+      ]
+    },
+    {
+      "slug": "userlistspage",
+      "title": "UserListsPage",
+      "description": "Страница списков пользователей",
+      "fields": [
+        "Общее число элементов",
+        "Общее число страниц",
+        "Является ли данная страница последней",
+        "Является ли данная страница первой",
+        "Размер страницы",
+        "Номер страницы",
+        "Число элементов в content",
+        "Содержимое страницы",
+        "Идентификатор списка пользователей",
+        "Представление (название) списка пользователей",
+        "Идентификатор пространства, к которому принадлежит список пользователей"
+      ],
+      "examples": [
+        "{ \"totalElements\" : 0 , \"totalPages\" : 0 , \"last\" : true , \"first\" : true , \"size\" : 0 , \"number\" : 0 , \"numberOfElements\" : 0 , \"content\" : [ { \"id\" : \"string\" , \"presentation\" : \"string\" , \"space-id\" : \"string\" } ] }"
+      ]
+    },
+    {
+      "slug": "userrefdto",
+      "title": "UserRefDto",
+      "description": "Идентификатор ссылки",
+      "fields": [
+        "Имя"
+      ],
+      "examples": [
+        "{ \"id\" : \"0193dde1-d10b-7c3a-a0eb-4a0ba0319908\" , \"name\" : \"Масков И.Р.\" }"
+      ]
+    }
+  ]
+}
