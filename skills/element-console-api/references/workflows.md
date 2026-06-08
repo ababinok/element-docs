@@ -1,6 +1,6 @@
 # Console API Workflows
 
-Use `scripts/search_console_api.py --full --slug <slug>` before implementing any workflow step. This file gives route selection only; exact body fields come from the OpenAPI payload.
+Use `cd "$SKILL_DIR" && python3 scripts/search_console_api.py --full --slug <slug>` before implementing any workflow step. `SKILL_DIR` is the directory containing `SKILL.md`. This file gives route selection only; exact body fields come from the OpenAPI payload.
 
 ## Find Current User
 
@@ -14,7 +14,17 @@ Method: `GET /console/api/v2/applications`
 Notes:
 
 - Supports pagination parameters such as `page`, `size`, and `result`.
-- Can filter deleted applications with `deleted`.
+- Use `deleted=false` by default for generic listing requests, including "all applications"; this means all non-deleted applications.
+- Use `deleted=true` only when the user explicitly asks for deleted applications.
+
+Preferred live command:
+
+```bash
+cd "$SKILL_DIR"
+python3 scripts/element_console_request.py list-applications
+```
+
+Defaults: `deleted=false`, `result=page`, `page=0`, `size=100`. Output columns: `name`, `status`, `uri`, `id`.
 
 ## Create Application
 
