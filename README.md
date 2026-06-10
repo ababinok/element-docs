@@ -1,6 +1,6 @@
 # Element Docs Marketplace
 
-Codex marketplace repository with a plugin for working with 1C:Enterprise Element documentation.
+Codex marketplace repository with a plugin for working with 1C:Enterprise Element documentation and code.
 
 ## Contents
 
@@ -9,6 +9,8 @@ Codex marketplace repository with a plugin for working with 1C:Enterprise Elemen
 - `plugins/element-docs/skills/element-console-api/` - Codex skill for the 1C:Enterprise Element control panel Console API.
 - `plugins/element-docs/skills/element-console-api/references/` - generated endpoint, schema, auth, safety, and workflow references.
 - `plugins/element-docs/skills/element-console-api/scripts/` - helper scripts for searching references, generating references, and making Console API requests without printing secrets.
+- `plugins/element-docs/skills/element-language-code/` - Codex skill for writing and reviewing 1C:Element language code.
+- `plugins/element-docs/skills/element-language-code/references/element_language_spec.md` - complete language specification loaded as one file.
 
 ## Installation
 

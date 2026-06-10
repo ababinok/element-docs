@@ -1,0 +1,4 @@
+interface:
+  display_name: "Element Language Code"
+  short_description: "Write code in 1C:Element language."
+  default_prompt: "Use $element-language-code to write 1C:Element code from the bundled language specification."
