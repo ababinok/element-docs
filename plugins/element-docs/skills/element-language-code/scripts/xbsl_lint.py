@@ -615,6 +615,7 @@ class CollectionExpr(Expr):
     kind: str
     elements: list[Expr]
     token: Token
+    type_ref: TypeRef | None = None
 
 
 @dataclass
@@ -1276,11 +1277,11 @@ class ExpressionParser:
         if token.value == "{":
             return self.parse_collection("Множество", token, "}")
         if token.value == "<":
-            self.skip_type_arguments()
+            type_tokens = self.collect_type_argument_tokens()
             if self.match_value("["):
-                return self.parse_collection("Массив", token, "]")
+                return self.parse_collection("Массив", token, "]", type_tokens)
             if self.match_value("{"):
-                return self.parse_collection("Множество", token, "}")
+                return self.parse_collection("Множество", token, "}", type_tokens)
             return UnknownExpr(token)
         if token.value == "Тип" and self.match_value("<"):
             self.skip_type_arguments()
@@ -1334,7 +1335,7 @@ class ExpressionParser:
             break
         return expr
 
-    def parse_collection(self, kind: str, token: Token, close_value: str) -> CollectionExpr:
+    def parse_collection(self, kind: str, token: Token, close_value: str, type_tokens: list[Token] | None = None) -> CollectionExpr:
         groups = self.collect_argument_groups(close_value)
         elements = [
             parse_expr_tokens(group, self.path, self.diagnostics)
@@ -1344,7 +1345,7 @@ class ExpressionParser:
         self.expect_value(close_value, f"Коллекционный литерал не закрыт '{close_value}'.")
         if close_value == "}" and any(any(token.value == ":" for token in group) for group in groups):
             kind = "Соответствие"
-        return CollectionExpr(kind, elements, token)
+        return CollectionExpr(kind, elements, token, collection_type_ref(kind, token, type_tokens or []))
 
     def parse_argument_list(self) -> list[Arg]:
         open_token = self.expect_value("(", "Ожидался список аргументов.")
@@ -1433,6 +1434,20 @@ class ExpressionParser:
                 depth -= 1
                 if depth == 0:
                     return
+
+    def collect_type_argument_tokens(self) -> list[Token]:
+        result: list[Token] = []
+        depth = 1
+        while not self.peek().end_marker and depth > 0:
+            token = self.advance()
+            if token.value == "<":
+                depth += 1
+            elif token.value == ">":
+                depth -= 1
+                if depth == 0:
+                    return result
+            result.append(token)
+        return result
 
     def looks_like_generic_call(self) -> bool:
         depth = 0
@@ -1628,6 +1643,51 @@ def base_type_name(text: str) -> str | None:
     return text.split("<", 1)[0].strip()
 
 
+def collection_type_ref(kind: str, token: Token, type_tokens: list[Token]) -> TypeRef | None:
+    if not type_tokens:
+        return None
+    type_args = type_tokens_text(type_tokens)
+    identifiers = tuple(token.value for token in type_tokens if token.kind == "IDENT")
+    return TypeRef(f"{kind}<{type_args}>", token, identifiers, "Неопределено" in identifiers)
+
+
+def array_element_type_ref(type_ref: TypeRef | None) -> TypeRef | None:
+    if type_ref is None:
+        return None
+    for part in split_union_type(type_ref.text):
+        if base_type_name(part) != "Массив":
+            continue
+        args = generic_argument_texts(part)
+        if args:
+            return TypeRef(args[0], type_ref.token, (), "Неопределено" in args[0])
+    return None
+
+
+def generic_argument_texts(type_text: str) -> list[str]:
+    start = type_text.find("<")
+    if start < 0:
+        return []
+    args: list[str] = []
+    current: list[str] = []
+    depth = 0
+    for char in type_text[start + 1 :]:
+        if char == "<":
+            depth += 1
+            current.append(char)
+        elif char == ">" and depth > 0:
+            depth -= 1
+            current.append(char)
+        elif char == ">" and depth == 0:
+            args.append("".join(current).strip())
+            return args
+        elif char == "," and depth == 0:
+            args.append("".join(current).strip())
+            current = []
+        else:
+            current.append(char)
+    return []
+
+
 def find_top_level_assignment(tokens: list[Token]) -> int | None:
     depth = 0
     for index, token in enumerate(tokens):
@@ -1649,6 +1709,7 @@ class Symbol:
     type_value: XbslType
     mutable: bool
     token: Token
+    type_ref: TypeRef | None = None
 
 
 class Scope:
@@ -1730,7 +1791,7 @@ class SemanticAnalyzer:
         for declaration in module.declarations:
             if isinstance(declaration, VarDecl):
                 type_value = self.type_of_decl(declaration)
-                scope.declare(Symbol(declaration.name, "variable", type_value, declaration.kind == "пер", declaration.token))
+                scope.declare(Symbol(declaration.name, "variable", type_value, declaration.kind == "пер", declaration.token, self.type_ref_of_decl(declaration)))
 
     def analyze_declaration(self, declaration: Decl, scope: Scope) -> None:
         if isinstance(declaration, VarDecl):
@@ -1740,6 +1801,8 @@ class SemanticAnalyzer:
         elif isinstance(declaration, TypeDecl):
             for member in declaration.members:
                 if isinstance(member, VarDecl):
+                    if declaration.kind == "структура" and member.name == "Тип":
+                        self.add_error(member.token, "XBSL0005", 'Недопустимое имя поля "Тип".')
                     self.check_type_ref(member.type_ref)
                 elif isinstance(member, MethodDecl):
                     self.check_method(member, scope)
@@ -1754,8 +1817,10 @@ class SemanticAnalyzer:
         previous_return = self.current_return_type
         self.current_return_type = method.return_type.to_type() if method.return_type else XbslType.nothing()
         method_scope = Scope(outer_scope)
+        if not method.static:
+            self.declare(method_scope, Symbol("этот", "context", XbslType.unknown(), False, method.token))
         for param in method.params:
-            self.declare(method_scope, Symbol(param.name, "parameter", param.type_ref.to_type(), True, param.token))
+            self.declare(method_scope, Symbol(param.name, "parameter", param.type_ref.to_type(), True, param.token, param.type_ref))
         for statement in method.body:
             self.check_statement(statement, method_scope)
         self.current_return_type = previous_return
@@ -1798,7 +1863,7 @@ class SemanticAnalyzer:
                 self.check_type_ref(type_ref)
                 child = Scope(scope)
                 if name:
-                    self.declare(child, Symbol(name, "variable", type_ref.to_type() if type_ref else XbslType({"Исключение"}), False, statement.token))
+                    self.declare(child, Symbol(name, "variable", type_ref.to_type() if type_ref else XbslType({"Исключение"}), False, statement.token, type_ref))
                 self.check_statements(body, child)
             if statement.finally_body:
                 self.check_child_block(statement.finally_body, scope)
@@ -1832,7 +1897,7 @@ class SemanticAnalyzer:
         existing = scope.local(declaration.name)
         if existing is not None and existing.token is declaration.token:
             return
-        self.declare(scope, Symbol(declaration.name, "variable", declared_type, declaration.kind == "пер", declaration.token))
+        self.declare(scope, Symbol(declaration.name, "variable", declared_type, declaration.kind == "пер", declaration.token, self.type_ref_of_decl(declaration)))
 
     def check_assignment(self, statement: AssignStmt, scope: Scope) -> None:
         if contains_safe_member(statement.target):
@@ -1940,7 +2005,7 @@ class SemanticAnalyzer:
             child = Scope(scope)
             for param in expr.params:
                 self.check_type_ref(param.type_ref)
-                self.declare(child, Symbol(param.name, "parameter", param.type_ref.to_type(), True, param.token))
+                self.declare(child, Symbol(param.name, "parameter", param.type_ref.to_type(), True, param.token, param.type_ref))
             if expr.return_expr is not None:
                 self.infer_expr(expr.return_expr, child)
             if expr.body:
@@ -1968,8 +2033,7 @@ class SemanticAnalyzer:
         return XbslType.unknown()
 
     def infer_call(self, expr: CallExpr, scope: Scope) -> XbslType:
-        for arg in expr.args:
-            self.infer_expr(arg.value, scope)
+        arg_types = [self.infer_expr(arg.value, scope) for arg in expr.args]
         if isinstance(expr.callee, NameExpr):
             signatures = self.methods_by_module.get(self.current_path, {}).get(expr.callee.name)
             if not signatures:
@@ -1980,8 +2044,45 @@ class SemanticAnalyzer:
                 return XbslType.unknown()
             self.check_call_argument_types(expr, signature, scope)
             return signature.return_type.to_type() if signature.return_type else XbslType.nothing()
+        if isinstance(expr.callee, MemberExpr):
+            self.check_array_remove_call(expr, expr.callee, arg_types, scope)
         self.infer_expr(expr.callee, scope)
         return XbslType.unknown()
+
+    def check_array_remove_call(self, call: CallExpr, callee: MemberExpr, arg_types: list[XbslType], scope: Scope) -> None:
+        if callee.name != "Удалить" or not call.args:
+            return
+        element_type_ref = array_element_type_ref(self.expr_type_ref(callee.obj, scope))
+        if element_type_ref is None:
+            return
+        element_arg = next(
+            ((arg, arg_types[index]) for index, arg in enumerate(call.args) if arg.name == "Элемент"),
+            (call.args[0], arg_types[0]) if call.args[0].name is None else None,
+        )
+        if element_arg is None:
+            return
+        arg, arg_type = element_arg
+        self.require_type(
+            arg_type,
+            element_type_ref.to_type(),
+            arg.token,
+            f"Массив.Удалить() принимает элемент типа {element_type_ref.to_type().display()}, а не индекс.",
+            "XBSL0009",
+        )
+
+    def expr_type_ref(self, expr: Expr | None, scope: Scope) -> TypeRef | None:
+        if expr is None:
+            return None
+        if isinstance(expr, NameExpr):
+            symbol = scope.lookup(expr.name)
+            return symbol.type_ref if symbol else None
+        if isinstance(expr, CastExpr):
+            return expr.type_ref
+        if isinstance(expr, NewExpr):
+            return expr.type_ref
+        if isinstance(expr, CollectionExpr):
+            return expr.type_ref
+        return None
 
     def match_signature(self, call: CallExpr, signatures: list[MethodSig]) -> MethodSig | None:
         for signature in signatures:
@@ -2034,6 +2135,9 @@ class SemanticAnalyzer:
         if declaration.initializer is not None:
             return XbslType.unknown()
         return XbslType.unknown()
+
+    def type_ref_of_decl(self, declaration: VarDecl) -> TypeRef | None:
+        return declaration.type_ref or self.expr_type_ref(declaration.initializer, Scope())
 
     def declare(self, scope: Scope, symbol: Symbol) -> None:
         if not scope.declare(symbol):

@@ -35,3 +35,5 @@ python3 scripts/xbsl_lint.py src --format json
 ## Scope Rules
 
 Variables declared inside `если`, `иначе`, `выбор/когда`, `для`, `пока`, `попытка/поймать/вконце`, `область`, or a block lambda are visible only inside that block. To use a value after a block, declare a mutable `пер` before the block and assign it inside the block.
+
+Non-static methods have an implicit read-only `этот` context symbol. Static methods do not have `этот`.
